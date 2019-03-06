@@ -114,8 +114,10 @@ query Blogposts {
 </jsx>
 ```
 
+What else colocates? Tests? sure.
+
 <details>
-  <summary>Aside: taking this idea to the extreme </summary>
+  <summary>Aside: taking the gql tag to the extreme </summary>
 Since loading is boilerplatey and distracts from the actual component JSX, what opportunities are there for rendering multiple UIs for component state? *Note: this is reaaaally sugary, but just a fun thought experiment*.
 
 ```vue
@@ -151,11 +153,9 @@ query Blogposts {
 ```
 </details>
 
-What else colocates? Tests? sure.
-
 <details>
   <summary>
-    crazy idea for serverless functions
+    Aside: crazy idea for serverless functions
   </summary>
 How about compiling Next.js style `getInitialProps` for a static site generator, so that it runs in the static build, but the function also builds to a serverless function where you can pull the data clientside?
 

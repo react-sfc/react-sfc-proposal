@@ -311,7 +311,7 @@ we have
 
 in a file. Why would we exchange file separation for a super long file? Although there are ways to mitigate this, it is not very appealing on its own.
 
-However, to the extent that the React SFC loader is a single entry point to webpack for all these different filetypes, we have the opportunity to simplify config, skip small amounts of boilerplate, and enforce some consistency with the single file format.
+However, to the extent that the React SFC loader is a single entry point to webpack for all these different filetypes, we have the opportunity to simplify config, skip small amounts of boilerplate, and enforce some consistency with the single file format. Having fewer files causes less pollution of IDE file namespace, and makes it easier to set up these peripheral concerns around jsx (styling, data, tests, documentation, etc) incrementally without messing with creating/deleting files.
 
 ## Am I missing some obvious idea or some critical flaw? 
 

@@ -153,6 +153,32 @@ query Blogposts {
 
 What else colocates? Tests? sure.
 
+<details>
+  <summary>
+    crazy idea for serverless functions
+  </summary>
+How about compiling Next.js style `getInitialProps` for a static site generator, so that it runs in the static build, but the function also builds to a serverless function where you can pull the data clientside?
+
+```vue
+<initialprop name="joke">
+import fetch from 'node-fetch'; // this is serverless node code!
+export async function handler(event, context) {
+  const response = await fetch('https://api.chucknorris.io/jokes/random');
+  const data = await response.json();
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ msg: data.value })
+  };
+}
+</initialprop>
+<jsx v2>
+  export default function({joke}) {
+    return <div>{joke}</div>
+  }
+</jsx>
+```
+</details>
+
 What about documentation?
 
 ```vue

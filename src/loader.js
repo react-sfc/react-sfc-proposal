@@ -7,24 +7,24 @@ export default function loader(source) {
   return `export default ${JSON.stringify(source)}`
 }
 
-export const sdsd = {
-  styles: [
-    {
-      type: 'style',
-      content: '\ndiv {\n  border: 1px solid red\n}\n',
-      start: 92,
-      attrs: {},
-      end: 131
-    }
-  ],
-  customBlocks: [
-    {
-      type: 'jsx',
-      content: '\nexport default function MyComponent() {\n  return <div>hi</div>\n}\n',
-      start: 5,
-      attrs: {},
-      end: 77
-    }
-  ],
-  errors: []
-}
+// export const sdsd = {
+//   styles: [
+//     {
+//       type: 'style',
+//       content: '\ndiv {\n  border: 1px solid red\n}\n',
+//       start: 92,
+//       attrs: {},
+//       end: 131
+//     }
+//   ],
+//   customBlocks: [
+//     {
+//       type: 'jsx',
+//       content: '\nexport default function MyComponent() {\n  return <div>hi</div>\n}\n',
+//       start: 5,
+//       attrs: {},
+//       end: 77
+//     }
+//   ],
+//   errors: []
+// }

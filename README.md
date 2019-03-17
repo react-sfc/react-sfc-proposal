@@ -38,7 +38,8 @@ All top level tags within SFCs would be extensible, but come with some good defa
 <style>
 div {
   // scoped by default
-  background-color: papayawhip .Button {
+  background-color: papayawhip;
+  .Button {
     border-color: cadetblue;
   }
 }

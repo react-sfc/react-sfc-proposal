@@ -17,23 +17,28 @@ Any new file format starts with a handicap of not working with existing tooling 
 
 ## Prior art
 
-- https://vuejs.org/v2/guide/single-file-components.html
+- vue-loader:
+  - https://vue-loader.vuejs.org/guide/#vue-cli
+  - vue [parseComponent](https://github.com/vuejs/vue/blob/dev/src/sfc/parser.js)
+  - vue compiler utils [parse](https://github.com/vuejs/component-compiler-utils/blob/master/lib/parse.ts)
+  - [vue html parsing](https://github.com/vuejs/vue/blob/dev/src/compiler/parser/html-parser.js)
 - https://github.com/digitalie/one-loader ([HN comments](https://news.ycombinator.com/item?id=15408140))
 - https://github.com/windyGex/react-template-loader (very old, uses `<template>` for some reason)
-- reddit discusssions: 
+- reddit discusssions:
+
   - https://www.reddit.com/r/reactjs/comments/6kzqm0/is_there_a_react_equivalent_to_vues_single_file/
   - https://www.reddit.com/r/reactjs/comments/9495ft/single_file_components_no_one_misses_it/
   - every few months it pops up: https://www.reddit.com/r/reactjs/search?q=single%20file%20components&restrict_sr=1
-  
+
 ## Basic Proposal
 
 All top level tags within SFCs would be extensible, but come with some good defaults.
 
 ```vue
 <style>
-div { // scoped by default
-  background-color: papayawhip
-  .Button {
+div {
+  // scoped by default
+  background-color: papayawhip .Button {
     border-color: cadetblue;
   }
 }
@@ -72,9 +77,9 @@ div {
 </style>
 ```
 
-*Note: there are smaller details to sweat here with regards to passing down className, but we're staying high level for now*
+_Note: there are smaller details to sweat here with regards to passing down className, but we're staying high level for now_
 
-While we're at it, lets locally opt into [JSX 2.0](https://github.com/facebook/jsx/issues/65), *without affecting the rest of the project*:
+While we're at it, lets locally opt into [JSX 2.0](https://github.com/facebook/jsx/issues/65), _without affecting the rest of the project_:
 
 ```vue
 <jsx v2>
@@ -151,6 +156,7 @@ query Blogposts {
   }
 </jsx>
 ```
+
 </details>
 
 <details>
@@ -177,6 +183,7 @@ export async function handler(event, context) {
   }
 </jsx>
 ```
+
 </details>
 
 What about documentation?
@@ -197,7 +204,7 @@ storiesOf('Button', module)
   ));
 </stories>
 <jsx v2>
-  export default function Button() { // Naming component needed? 
+  export default function Button() { // Naming component needed?
     return (<div>
       Some Text
       <button className="Button">Call to Action</button>
@@ -231,12 +238,10 @@ storiesOf('Button', module)
 
 Or instead of storybook we can use MDX and [the Docz model](http://docz.site). Note we can pass args to the top level tags as well here:
 
-
 ```mdx
-<mdx docz>
----
-name: Button
----
+## <mdx docz>
+
+## name: Button
 
 # Look at my Button
 
@@ -244,11 +249,7 @@ name: Button
   <Button />
 </Playground>
 
-<Playground>
-  {() => (
-    <Button />
-  )}
-</Playground>
+<Playground>{() => <Button />}</Playground>
 
 <Playground>
   {() => {
@@ -267,6 +268,7 @@ Having all these tags seem like wasted opportunity in top level whitespace. Why 
 ---
 name: MyComponent
 ---
+
 ## Source
 
 <jsx v2>
@@ -296,11 +298,7 @@ query Blogposts {
   <Button />
 </Playground>
 
-<Playground>
-  {() => (
-    <Button />
-  )}
-</Playground>
+<Playground>{() => <Button />}</Playground>
 
 <Playground>
   {() => {
@@ -314,7 +312,7 @@ This could be documentation.
 
 ## General principle: Loaders vs SFCs
 
-Stepping back from concrete examples to discuss how this might affect DX. In a sense, SFCs simply centralize what we already do with loaders. Instead of 
+Stepping back from concrete examples to discuss how this might affect DX. In a sense, SFCs simply centralize what we already do with loaders. Instead of
 
 ```
 Component.jsx
@@ -339,6 +337,6 @@ in a file. Why would we exchange file separation for a super long file? Although
 
 However, to the extent that the React SFC loader is a single entry point to webpack for all these different filetypes, we have the opportunity to simplify config, skip small amounts of boilerplate, and enforce some consistency with the single file format. Having fewer files causes less pollution of IDE file namespace, and makes it easier to set up these peripheral concerns around jsx (styling, data, tests, documentation, etc) incrementally without messing with creating/deleting files.
 
-## Am I missing some obvious idea or some critical flaw? 
+## Am I missing some obvious idea or some critical flaw?
 
 File an issue or PR or [tweet at me](https://twitter.com/swyx), lets chat.

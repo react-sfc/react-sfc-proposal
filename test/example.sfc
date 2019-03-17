@@ -1,0 +1,11 @@
+<jsx>
+  export default function MyComponent() {
+    return <div>hi</div>
+  }
+</jsx>
+
+<style>
+  div {
+    border: 1px solid red
+  }
+</style>

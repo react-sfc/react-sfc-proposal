@@ -1,8 +1,8 @@
 {
-  "name": "learnwebpack",
-  "version": "1.0.0",
+  "name": "react-sfc-loader",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "src/react-sfc-loader.js",
   "dependencies": {
     "babel-loader": "^8.0.5",
     "css-loader": "^2.1.1",

@@ -26,15 +26,15 @@ test('Inserts name and outputs JavaScript', async () => {
   const stats = await compiler('example.sfc')
   const json = stats.toJson()
   // // debugger
-  // json.modules.forEach((m, i) => {
-  //   console.log(' [index] ' + i, m.source)
-  //   if (m.modules) {
-  //     console.log('submodules', m.modules.length)
-  //     m.modules.forEach((n, j) => {
-  //       console.log(' [index] ' + j, n.source)
-  //     })
-  //   }
-  // })
+  json.modules.forEach((m, i) => {
+    console.log(' [index] ' + i, m.source)
+    if (m.modules) {
+      console.log('submodules', m.modules.length)
+      m.modules.forEach((n, j) => {
+        console.log(' [index] ' + j, n.source)
+      })
+    }
+  })
   // const output = stats.toJson().modules[0].source
   // expect(output).toBe(result)
   expect(1).toBe(1)

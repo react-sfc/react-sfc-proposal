@@ -24,8 +24,8 @@ Any new file format starts with a handicap of not working with existing tooling 
   - [vue html parsing](https://github.com/vuejs/vue/blob/dev/src/compiler/parser/html-parser.js)
 - https://github.com/digitalie/one-loader ([HN comments](https://news.ycombinator.com/item?id=15408140))
 - https://github.com/windyGex/react-template-loader (very old, uses `<template>` for some reason)
+- https://github.com/LukasBombach/single-file-components
 - reddit discusssions:
-
   - https://www.reddit.com/r/reactjs/comments/6kzqm0/is_there_a_react_equivalent_to_vues_single_file/
   - https://www.reddit.com/r/reactjs/comments/9495ft/single_file_components_no_one_misses_it/
   - every few months it pops up: https://www.reddit.com/r/reactjs/search?q=single%20file%20components&restrict_sr=1

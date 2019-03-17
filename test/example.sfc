@@ -1,8 +1,8 @@
-<jsx>
+<script>
   export default function MyComponent() {
-    return <div>hi</div>
+    return <div>helloworld</div>
   }
-</jsx>
+</script>
 
 <style>
   div {

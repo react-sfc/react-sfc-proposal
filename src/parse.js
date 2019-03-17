@@ -5,12 +5,8 @@ const splitRE = /\r?\n/g
 const replaceRE = /./g
 const tagAliasLookup = tag =>
   ({
-    tsx: 'tsx',
-    ts: 'ts',
-    jsx: 'js',
-    js: 'js',
-    script: 'js',
-    style: 'css'
+    script: 'script',
+    style: 'style'
   }[tag] || null)
 
 /**
@@ -20,6 +16,7 @@ const tagAliasLookup = tag =>
 export function parseComponent(content, options = {}) {
   // const sfc: SFCDescriptor = {
   const sfc = {
+    script: null,
     styles: [],
     customBlocks: [],
     errors: []
@@ -61,6 +58,9 @@ export function parseComponent(content, options = {}) {
       if (tag === 'style') {
         checkAttrs(currentBlock, attrs)
         sfc.styles.push(currentBlock)
+      } else if (tag === 'script') {
+        checkAttrs(currentBlock, attrs)
+        sfc.script = currentBlock
       } else {
         // custom blocks
         sfc.customBlocks.push(currentBlock)

@@ -1,5 +1,5 @@
 import { getOptions } from 'loader-utils'
-import { parseComponent } from './parse'
+import { parseComponent } from '../parse'
 export default function loader(source) {
   const options = getOptions(this)
   console.log({ source: parseComponent(source) })

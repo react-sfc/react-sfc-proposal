@@ -22,6 +22,7 @@ Any new file format starts with a handicap of not working with existing tooling 
   - vue [parseComponent](https://github.com/vuejs/vue/blob/dev/src/sfc/parser.js)
   - vue compiler utils [parse](https://github.com/vuejs/component-compiler-utils/blob/master/lib/parse.ts)
   - [vue html parsing](https://github.com/vuejs/vue/blob/dev/src/compiler/parser/html-parser.js)
+  - [.vue files for React](https://github.com/LukasBombach/single-file-components) by Lukas Bombach
 - https://github.com/digitalie/one-loader ([HN comments](https://news.ycombinator.com/item?id=15408140))
 - https://github.com/windyGex/react-template-loader (very old, uses `<template>` for some reason)
 - https://github.com/LukasBombach/single-file-components

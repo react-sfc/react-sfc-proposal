@@ -1,4 +1,5 @@
 import { SourceMapGenerator } from 'source-map'
+import { SFCDescriptor, ParseOptions, parseHTMLOptions } from './types'
 
 const hash = require('hash-sum')
 let cache = require('lru-cache')
@@ -12,14 +13,13 @@ export function parse(options: ParseOptions): SFCDescriptor {
     source,
     filename = '',
     compiler,
-    // compilerParseOptions = { pad: 'line' } as VueTemplateCompilerParseOptions,
-    compilerParseOptions = { pad: 'line' },
+    compilerParseOptions = { pad: 'line' } as parseHTMLOptions,
     sourceRoot = '',
     needMap = true
   } = options
   const cacheKey = hash(filename + source)
-  // let output: SFCDescriptor = cache.get(cacheKey)
-  let output = cache.get(cacheKey)
+
+  let output: SFCDescriptor = cache.get(cacheKey)
   if (output) return output
   output = compiler.parseComponent(source, compilerParseOptions)
   if (needMap) {
@@ -44,14 +44,14 @@ export function parse(options: ParseOptions): SFCDescriptor {
   return output
 }
 
-// function generateSourceMap(
-//   filename: string,
-//   source: string,
-//   generated: string,
-//   sourceRoot: string,
-//   pad?: 'line' | 'space'
-// ): RawSourceMap {
-function generateSourceMap(filename, source, generated, sourceRoot, pad) {
+function generateSourceMap(
+  filename: string,
+  source: string,
+  generated: string,
+  sourceRoot: string,
+  pad?: 'line' | 'space'
+) {
+  // ): RawSourceMap {
   const map = new SourceMapGenerator({
     file: filename.replace(/\\/g, '/'),
     sourceRoot: sourceRoot.replace(/\\/g, '/')
@@ -61,8 +61,7 @@ function generateSourceMap(filename, source, generated, sourceRoot, pad) {
     offset =
       source
         .split(generated)
-        .shift()
-        // .shift()!
+        .shift()!
         .split(splitRE).length - 1
   }
   map.setSourceContent(filename, source)

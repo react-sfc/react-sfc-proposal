@@ -1,25 +1,16 @@
 import { Webpack } from './typesFromTSLoader'
-// export interface ParseOptions {
-//   source: string
-//   filename?: string
-//   compiler: VueTemplateCompiler
-//   compilerParseOptions?: VueTemplateCompilerParseOptions
-//   sourceRoot?: string
-//   needMap?: boolean
-// }
+export interface ParseOptions {
+  source: string
+  filename?: string
+  compiler: {
+    parseComponent(content: string, options?: parseHTMLOptions): SFCDescriptor
+  }
+  compilerParseOptions?: parseHTMLOptions
+  sourceRoot?: string
+  needMap?: boolean
+}
 
 export type LoaderContextType = Webpack
-// = {
-//   callback: Function
-//   resourcePath: string
-//   resourceQuery: string
-//   emitError: Function
-//   target: string
-//   request: string
-//   minimize: string
-//   sourceMap: string
-//   rootContext: string
-// }
 export type attrType = { start?: number; end?: number }
 export type ASTAttr = {
   value: string
@@ -36,7 +27,7 @@ export type parseHTMLOptions = {
   warn?: Function
   start?: Function
   end?: Function
-  pad?: true | 'line' | 'space'
+  pad?: 'line' | 'space'
   shouldDecodeNewlinesForHref?: boolean
   shouldDecodeNewlines?: boolean
   outputSourceRange?: boolean

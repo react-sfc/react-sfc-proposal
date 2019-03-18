@@ -1,3 +1,4 @@
+import { LoaderContextType } from '../types/index'
 /* globals __VUE_SSR_CONTEXT__ */
 
 // IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
@@ -5,7 +6,7 @@
 // be included in the final webpack user bundle.
 
 export default function normalizeComponent(
-  scriptExports,
+  scriptExports: any,
   render,
   staticRenderFns,
   functionalTemplate,
@@ -37,7 +38,7 @@ export default function normalizeComponent(
   var hook
   if (moduleIdentifier) {
     // server build
-    hook = function(context) {
+    hook = function(context: LoaderContextType) {
       // 2.3 injection
       context =
         context || // cached call

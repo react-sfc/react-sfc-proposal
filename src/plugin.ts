@@ -1,15 +1,44 @@
-const qs = require('querystring')
+import qs from 'querystring'
 const RuleSet = require('webpack/lib/RuleSet')
 
 const id = 'react-sfc-loader-plugin'
 const NS = 'react-sfc-loader'
 
+type ResourceType = (s: string) => boolean
+type RuleType = {
+  include?: string
+  enforce?: unknown
+  resource: ResourceType
+  resourceQuery: Function
+  oneOf?: RuleType[]
+}
+type CompilerType = {
+  hooks: {
+    compilation: {
+      tap: Function
+    }
+  }
+  plugin: Function
+  options: {
+    module: {
+      rules: RuleType[]
+    }
+  }
+}
+type CompilationType = {
+  hooks: {
+    normalModuleLoader: unknown
+  }
+  plugin: Function
+}
+
 class SFCLoaderPlugin {
-  apply(compiler) {
+  static NS?: string
+  apply(compiler: CompilerType) {
     // add NS marker so that the loader can detect and report missing plugin
     if (compiler.hooks) {
       // webpack 4
-      compiler.hooks.compilation.tap(id, compilation => {
+      compiler.hooks.compilation.tap(id, (compilation: CompilationType) => {
         let normalModuleLoader
         if (Object.isFrozen(compilation.hooks)) {
           // webpack 5
@@ -17,14 +46,14 @@ class SFCLoaderPlugin {
         } else {
           normalModuleLoader = compilation.hooks.normalModuleLoader
         }
-        normalModuleLoader.tap(id, loaderContext => {
+        normalModuleLoader.tap(id, (loaderContext: Object) => {
           loaderContext[NS] = true
         })
       })
     } else {
       // webpack < 4
-      compiler.plugin('compilation', compilation => {
-        compilation.plugin('normal-module-loader', loaderContext => {
+      compiler.plugin('compilation', (compilation: CompilationType) => {
+        compilation.plugin('normal-module-loader', (loaderContext: Object) => {
           loaderContext[NS] = true
         })
       })
@@ -55,7 +84,7 @@ class SFCLoaderPlugin {
     // get the normlized "use" for sfc files
     const sfcUse = sfcRule.use
     // get react-sfc-loader options
-    const sfcLoaderUseIndex = sfcUse.findIndex(u => {
+    const sfcLoaderUseIndex = sfcUse.findIndex((u: { loader: string }) => {
       return /^react-sfc-loader|(\/|\\|@)react-sfc-loader/.test(u.loader)
     })
 
@@ -75,13 +104,13 @@ class SFCLoaderPlugin {
 
     // for each user rule (expect the sfc rule), create a cloned rule
     // that targets the corresponding language blocks in *.sfc files.
-    const clonedRules = rules.filter(r => r !== sfcRule).map(cloneRule)
+    const clonedRules = rules.filter((r: string) => r !== sfcRule).map(cloneRule)
 
     // global pitcher (responsible for injecting template compiler loader & CSS
     // post loader)
     const pitcher = {
       loader: require.resolve('./loaders/pitcher'),
-      resourceQuery: query => {
+      resourceQuery: (query: string) => {
         const parsed = qs.parse(query.slice(1))
         return parsed.sfc != null
       },
@@ -95,33 +124,32 @@ class SFCLoaderPlugin {
     compiler.options.module.rules = [pitcher, ...clonedRules, ...rules]
   }
 }
-
-function createMatcher(fakeFile) {
-  return (rule, i) => {
+function createMatcher(fakeFile: string) {
+  return (rule: RuleType) => {
     // #1201 we need to skip the `include` check when locating the sfc rule
     const clone = Object.assign({}, rule)
     delete clone.include
     const normalized = RuleSet.normalizeRule(clone, {}, '')
-    return !rule.enforce && normalized.resource && normalized.resource(fakeFile)
+    return !rule.enforce && normalized.resource && (normalized.resource(fakeFile) as boolean)
   }
 }
 
-function cloneRule(rule) {
+function cloneRule(rule: RuleType) {
   const { resource, resourceQuery } = rule
   // Assuming `test` and `resourceQuery` tests are executed in series and
   // synchronously (which is true based on RuleSet's implementation), we can
   // save the current resource being matched from `test` so that we can access
   // it in `resourceQuery`. This ensures when we use the normalized rule's
   // resource check, include/exclude are matched correctly.
-  let currentResource
+  let currentResource: ResourceType
   const res = Object.assign({}, rule, {
     resource: {
-      test: resource => {
+      test: (resource: ResourceType) => {
         currentResource = resource
         return true
       }
     },
-    resourceQuery: query => {
+    resourceQuery: (query: string) => {
       const parsed = qs.parse(query.slice(1))
       if (parsed.sfc == null) {
         return false

@@ -1,10 +1,11 @@
 // from https://github.com/vuejs/vue/blob/dev/src/compiler/parser/html-parser.js
 
 import { makeMap } from './utils'
+import { parseHTMLOptions, maybenum, attrType } from './types'
 /**
  * Always return false.
  */
-export const no = (a, b, c) => false
+export const no = () => false
 
 export const isUnaryTag = makeMap(
   'area,base,br,col,embed,frame,hr,img,input,isindex,keygen,' + 'link,meta,param,source,track,wbr'
@@ -72,20 +73,34 @@ const encodedAttrWithNewLines = /&(?:lt|gt|quot|amp|#39|#10|#9);/g
 
 // #5992
 const isIgnoreNewlineTag = makeMap('pre,textarea', true)
-const shouldIgnoreFirstNewline = (tag, html) => tag && isIgnoreNewlineTag(tag) && html[0] === '\n'
+const shouldIgnoreFirstNewline = (tag: string, html: string) => tag && isIgnoreNewlineTag(tag) && html[0] === '\n'
 
-function decodeAttr(value, shouldDecodeNewlines) {
+function decodeAttr(value: string, shouldDecodeNewlines?: boolean) {
   const re = shouldDecodeNewlines ? encodedAttrWithNewLines : encodedAttr
   return value.replace(re, match => decodingMap[match])
 }
 
-export function parseHTML(html, options = {}) {
-  const stack = []
+type matchType = {
+  tagName: string
+  attrs: attrType[]
+  start: number
+  unarySlash?: string
+  end?: number
+}
+type StackType = {
+  tag: string
+  lowerCasedTag: string
+  attrs: attrType[]
+  start: number
+  end?: number
+}
+export function parseHTML(html: string, options: parseHTMLOptions = {}) {
+  const stack: StackType[] = []
   const expectHTML = options.expectHTML
   const isUnaryTag = options.isUnaryTag || no
   const canBeLeftOpenTag = options.canBeLeftOpenTag || no
   let index = 0
-  let last, lastTag
+  let last, lastTag: string | undefined
   while (html) {
     last = html
     // Make sure we're not in a plaintext content element like script/style
@@ -97,7 +112,7 @@ export function parseHTML(html, options = {}) {
           const commentEnd = html.indexOf('-->')
 
           if (commentEnd >= 0) {
-            if (options.shouldKeepComment) {
+            if (options.shouldKeepComment && options.comment) {
               options.comment(html.substring(4, commentEnd), index, index + commentEnd + 3)
             }
             advance(commentEnd + 3)
@@ -208,22 +223,24 @@ export function parseHTML(html, options = {}) {
   // Clean up any remaining tags
   parseEndTag()
 
-  function advance(n) {
+  function advance(n: number) {
     index += n
     html = html.substring(n)
   }
-
   function parseStartTag() {
     const start = html.match(startTagOpen)
     if (start) {
-      const match = {
+      const match: matchType = {
         tagName: start[1],
         attrs: [],
         start: index
       }
       advance(start[0].length)
-      let end, attr
-      while (!(end = html.match(startTagClose)) && (attr = html.match(dynamicArgAttribute) || html.match(attribute))) {
+      let end, attr: attrType
+      while (
+        !(end = html.match(startTagClose)) &&
+        (attr = (html.match(dynamicArgAttribute) || html.match(attribute)) as attrType)
+      ) {
         attr.start = index
         advance(attr[0].length)
         attr.end = index
@@ -236,9 +253,10 @@ export function parseHTML(html, options = {}) {
         return match
       }
     }
+    return null // should never get here
   }
 
-  function handleStartTag(match) {
+  function handleStartTag(match: matchType) {
     const tagName = match.tagName
     const unarySlash = match.unarySlash
 
@@ -256,7 +274,7 @@ export function parseHTML(html, options = {}) {
     const l = match.attrs.length
     const attrs = new Array(l)
     for (let i = 0; i < l; i++) {
-      const args = match.attrs[i]
+      const args = match.attrs[i] || []
       const value = args[3] || args[4] || args[5] || ''
       const shouldDecodeNewlines =
         tagName === 'a' && args[1] === 'href' ? options.shouldDecodeNewlinesForHref : options.shouldDecodeNewlines
@@ -265,8 +283,9 @@ export function parseHTML(html, options = {}) {
         value: decodeAttr(value, shouldDecodeNewlines)
       }
       if (process.env.NODE_ENV !== 'production' && options.outputSourceRange) {
-        attrs[i].start = args.start + args[0].match(/^\s*/).length
-        attrs[i].end = args.end
+        // swyx: there was a possible bug here typescript caught with the args
+        attrs[i].start = args[i].start + args[0].match(/^\s*/).length
+        attrs[i].end = args[i].end
       }
     }
 
@@ -286,7 +305,7 @@ export function parseHTML(html, options = {}) {
     }
   }
 
-  function parseEndTag(tagName, start, end) {
+  function parseEndTag(tagName?: string, start?: maybenum, end?: maybenum) {
     let pos, lowerCasedTagName
     if (start == null) start = index
     if (end == null) end = index
@@ -317,7 +336,7 @@ export function parseHTML(html, options = {}) {
 
       // Remove the open elements from the stack
       stack.length = pos
-      lastTag = pos && stack[pos - 1].tag
+      lastTag = pos ? stack[pos - 1].tag : undefined
     } else if (lowerCasedTagName === 'br') {
       if (options.start) {
         options.start(tagName, [], true, start, end)

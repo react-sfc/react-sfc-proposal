@@ -1,50 +1,51 @@
 import deindent from 'de-indent'
 import { parseHTML } from './html-parser'
+import { SFCDescriptor, SFCBlock, parseHTMLOptions, maybenum, ASTAttr } from './types'
 
 const splitRE = /\r?\n/g
 const replaceRE = /./g
-const tagAliasLookup = tag =>
-  ({
-    script: 'script',
-    style: 'style'
-  }[tag] || null)
+// const tagAliasLookup = (tag: string) =>
+//   ({
+//     script: 'script',
+//     style: 'style'
+//   }[tag] || null)
 
 /**
  * Parse a single-file component file into an SFC Descriptor Object.
  */
-// export function parseComponent(content: string, options?: Object = {}): SFCDescriptor {
-export function parseComponent(content, options = {}) {
-  // const sfc: SFCDescriptor = {
+export function parseComponent(content: string, options: parseHTMLOptions = {}): SFCDescriptor {
   const sfc = {
-    script: null,
-    styles: [],
-    customBlocks: [],
-    errors: []
+    script: null as SFCBlock | null,
+    styles: [] as SFCBlock[],
+    customBlocks: [] as SFCBlock[],
+    errors: [] as WarningMessage[]
   }
   let depth = 0
-  // let currentBlock: ?SFCBlock = null
-  let currentBlock = null
+  let currentBlock: SFCBlock | null = null
 
-  let warn = msg => {
-    sfc.errors.push(msg)
+  let warn = (msg: string, range?: { start: maybenum; end: maybenum }) => {
+    sfc.errors.push({ msg })
   }
 
+  type WarningMessage = {
+    msg: string
+    start?: number
+    end?: number
+  }
   if (process.env.NODE_ENV !== 'production' && options.outputSourceRange) {
     warn = (msg, range) => {
-      // const data: WarningMessage = { msg }
-      const data = { msg }
-      if (range.start != null) {
+      const data: WarningMessage = { msg }
+      if (range && range.start != null) {
         data.start = range.start
       }
-      if (range.end != null) {
+      if (range && range.end != null) {
         data.end = range.end
       }
       sfc.errors.push(data)
     }
   }
 
-  // function start(tag: string, attrs: Array<ASTAttr>, unary: boolean, start: number, end: number) {
-  function start(tag, attrs, unary, start, end) {
+  function start(tag: string, attrs: Array<ASTAttr>, unary: boolean, start: number, end: number) {
     if (depth === 0) {
       currentBlock = {
         type: tag,
@@ -71,8 +72,7 @@ export function parseComponent(content, options = {}) {
     }
   }
 
-  // function checkAttrs(block: SFCBlock, attrs: Array<ASTAttr>) {
-  function checkAttrs(block, attrs) {
+  function checkAttrs(block: SFCBlock, attrs: Array<ASTAttr>) {
     for (let i = 0; i < attrs.length; i++) {
       const attr = attrs[i]
       if (attr.name === 'lang') {
@@ -90,8 +90,7 @@ export function parseComponent(content, options = {}) {
     }
   }
 
-  // function end(tag: string, start: number) {
-  function end(tag, start) {
+  function end(tag: string, start: number) {
     if (depth === 1 && currentBlock) {
       currentBlock.end = start
       let text = content.slice(currentBlock.start, currentBlock.end)
@@ -110,8 +109,7 @@ export function parseComponent(content, options = {}) {
     depth--
   }
 
-  // function padContent(block: SFCBlock, pad: true | 'line' | 'space') {
-  function padContent(block, pad) {
+  function padContent(block: SFCBlock, pad: true | 'line' | 'space') {
     if (pad === 'space') {
       return content.slice(0, block.start).replace(replaceRE, ' ')
     } else {

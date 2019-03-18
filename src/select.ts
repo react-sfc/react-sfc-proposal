@@ -1,6 +1,18 @@
-module.exports = function selectBlock(descriptor, loaderContext, query, appendExtension) {
+import { SFCDescriptor, LoaderContextType } from './types'
+
+type QueryType = {
+  type: string
+  index: number
+}
+
+module.exports = function selectBlock(
+  descriptor: SFCDescriptor,
+  loaderContext: LoaderContextType,
+  query: QueryType,
+  appendExtension: boolean
+) {
   // script
-  if (query.type === `script`) {
+  if (query.type === `script` && descriptor.script) {
     if (appendExtension) {
       loaderContext.resourcePath += '.' + (descriptor.script.lang || 'js')
     }

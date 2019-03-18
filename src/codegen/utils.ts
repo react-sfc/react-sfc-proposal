@@ -1,11 +1,11 @@
-const qs = require('querystring')
+import qs from 'querystring'
 
 // these are built-in query parameters so should be ignored
 // if the user happen to add them as attrs
 const ignoreList = ['id', 'index', 'src', 'type']
 
 // transform the attrs on a SFC block descriptor into a resourceQuery string
-exports.attrsToQuery = (attrs, langFallback) => {
+export const attrsToQuery = (attrs: Object, langFallback: string) => {
   let query = ``
   for (const name in attrs) {
     const value = attrs[name]

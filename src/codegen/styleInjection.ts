@@ -1,14 +1,16 @@
+import { LoaderContextType, SFCBlock } from '../types'
+import { attrsToQuery } from './utils'
 // const hotReloadAPIPath = JSON.stringify(require.resolve('vue-hot-reload-api'))
 const nonWhitespaceRE = /\S+/
 
 module.exports = function genStyleInjectionCode(
-  loaderContext,
-  styles,
-  id,
-  resourcePath,
-  stringifyRequest,
-  needsHotReload,
-  needsExplicitInjection
+  loaderContext: LoaderContextType,
+  styles: SFCBlock[],
+  id: string,
+  resourcePath: string,
+  stringifyRequest: (s: string) => string,
+  needsHotReload: boolean,
+  needsExplicitInjection: boolean
 ) {
   let styleImportsCode = ``
   let styleInjectionCode = ``
@@ -17,7 +19,7 @@ module.exports = function genStyleInjectionCode(
   let hasCSSModules = false
   const cssModuleNames = new Map()
 
-  function genStyleRequest(style, i) {
+  function genStyleRequest(style: SFCBlock, i: number) {
     const src = style.src || resourcePath
     const attrsQuery = attrsToQuery(style.attrs, 'css')
     const inheritQuery = `&${loaderContext.resourceQuery.slice(1)}`
@@ -28,7 +30,7 @@ module.exports = function genStyleInjectionCode(
     return stringifyRequest(src + query)
   }
 
-  function genCSSModulesCode(style, request, i) {
+  function genCSSModulesCode(style: SFCBlock, request: string, i: number) {
     hasCSSModules = true
 
     const moduleName = style.module === true ? '$style' : style.module
@@ -72,7 +74,7 @@ module.exports = function genStyleInjectionCode(
   }
 
   // empty styles: with no `src` specified or only contains whitespaces
-  const isNotEmptyStyle = style => style.src || nonWhitespaceRE.test(style.content)
+  const isNotEmptyStyle = (style: SFCBlock) => style.src || nonWhitespaceRE.test(style.content)
   // explicit injection is needed in SSR (for critical CSS collection)
   // or in Shadow Mode (for injection into shadow root)
   // In these modes, vue-style-loader exports objects with the __inject__
@@ -123,19 +125,4 @@ ${
 
 ${cssModulesHotReloadCode}
   `.trim()
-}
-
-// transform the attrs on a SFC block descriptor into a resourceQuery string
-function attrsToQuery(attrs, langFallback) {
-  let query = ``
-  for (const name in attrs) {
-    const value = attrs[name]
-    if (!ignoreList.includes(name)) {
-      query += `&${qs.escape(name)}=${value ? qs.escape(value) : ``}`
-    }
-  }
-  if (langFallback && !(`lang` in attrs)) {
-    query += `&lang=${langFallback}`
-  }
-  return query
 }

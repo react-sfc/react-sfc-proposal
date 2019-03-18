@@ -5,16 +5,23 @@ const selfPath = require.resolve('../react-sfc-loader')
 // const templateLoaderPath = require.resolve('./templateLoader')
 // const stylePostLoaderPath = require.resolve('./stylePostLoader')
 
-const isESLintLoader = l => /(\/|\\|@)eslint-loader/.test(l.path)
-const isNullLoader = l => /(\/|\\|@)null-loader/.test(l.path)
-const isCSSLoader = l => /(\/|\\|@)css-loader/.test(l.path)
-const isCacheLoader = l => /(\/|\\|@)cache-loader/.test(l.path)
-const isPitcher = l => l.path !== __filename
-const isPreLoader = l => !l.pitchExecuted
-const isPostLoader = l => l.pitchExecuted
+type LoaderType = {
+  path: string
+  pitchExecuted: boolean
+  query: string
+  request: string
+}
 
-const dedupeESLintLoader = loaders => {
-  const res = []
+const isESLintLoader = (l: LoaderType) => /(\/|\\|@)eslint-loader/.test(l.path)
+const isNullLoader = (l: LoaderType) => /(\/|\\|@)null-loader/.test(l.path)
+const isCSSLoader = (l: LoaderType) => /(\/|\\|@)css-loader/.test(l.path)
+const isCacheLoader = (l: LoaderType) => /(\/|\\|@)cache-loader/.test(l.path)
+const isPitcher = (l: LoaderType) => l.path !== __filename
+const isPreLoader = (l: LoaderType) => !l.pitchExecuted
+const isPostLoader = (l: LoaderType) => l.pitchExecuted
+
+const dedupeESLintLoader = (loaders: LoaderType[]) => {
+  const res: LoaderType[] = []
   let seen = false
   loaders.forEach(l => {
     if (!isESLintLoader(l)) {
@@ -27,7 +34,7 @@ const dedupeESLintLoader = loaders => {
   return res
 }
 
-const shouldIgnoreCustomBlock = loaders => {
+const shouldIgnoreCustomBlock = (loaders: LoaderType[]) => {
   const actualLoaders = loaders.filter(loader => {
     // vue-loader
     if (loader.path === selfPath) {
@@ -44,11 +51,12 @@ const shouldIgnoreCustomBlock = loaders => {
   return actualLoaders.length === 0
 }
 
-module.exports = code => code
+// wtf does this do
+// module.exports = code => code
 
 // This pitching loader is responsible for intercepting all vue block requests
 // and transform it into appropriate requests.
-module.exports.pitch = function(remainingRequest) {
+module.exports.pitch = function(remainingRequest: string) {
   const options = loaderUtils.getOptions(this)
   const { cacheDirectory, cacheIdentifier } = options
   const query = qs.parse(this.resourceQuery.slice(1))
@@ -61,7 +69,7 @@ module.exports.pitch = function(remainingRequest) {
     // if this is an inline block, since the whole file itself is being linted,
     // remove eslint-loader to avoid duplicate linting.
     if (/\.vue$/.test(this.resourcePath)) {
-      loaders = loaders.filter(l => !isESLintLoader(l))
+      loaders = loaders.filter((l: LoaderType) => !isESLintLoader(l))
     } else {
       // This is a src import. Just make sure there's not more than 1 instance
       // of eslint present.
@@ -77,7 +85,7 @@ module.exports.pitch = function(remainingRequest) {
     return
   }
 
-  const genRequest = loaders => {
+  const genRequest = (loaders: LoaderType[]) => {
     // Important: dedupe since both the original rule
     // and the cloned rule would match a source import request.
     // also make sure to dedupe based on loader path.
@@ -87,7 +95,7 @@ module.exports.pitch = function(remainingRequest) {
     // for user config and inline minification. So we need to dedupe baesd on
     // path AND query to be safe.
     const seen = new Map()
-    const loaderStrings = []
+    const loaderStrings: string[] = []
 
     loaders.forEach(loader => {
       const identifier = typeof loader === 'string' ? loader : loader.path + loader.query

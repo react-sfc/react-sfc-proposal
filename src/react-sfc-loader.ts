@@ -7,30 +7,40 @@ const loaderUtils = require('loader-utils')
 const { attrsToQuery } = require('./codegen/utils')
 const { parse } = require('./component-compiler-utils')
 import { parseComponent } from './parse'
+import { LoaderContextType } from './types'
 const genStylesCode = require('./codegen/styleInjection')
 // const { genHotReloadCode } = require('./codegen/hotReload')
 // const genCustomBlocksCode = require('./codegen/customBlocks')
-const componentNormalizerPath = require.resolve('./runtime/componentNormalizer')
+// const componentNormalizerPath = require.resolve('./runtime/componentNormalizer')
 const { NS } = require('./plugin')
 
 let errorEmitted = false
 
-module.exports = function(source) {
+module.exports = function(this: LoaderContextType, source: string) {
   const loaderContext = this
 
   if (!errorEmitted && !loaderContext['thread-loader'] && !loaderContext[NS]) {
-    loaderContext.emitError(
-      new Error(
-        `react-sfc-loader was used without the corresponding plugin. ` +
-          `Make sure to include SFCLoaderPlugin in your webpack config.`
+    loaderContext.emitError &&
+      loaderContext.emitError(
+        new Error(
+          `react-sfc-loader was used without the corresponding plugin. ` +
+            `Make sure to include SFCLoaderPlugin in your webpack config.`
+        )
       )
-    )
     errorEmitted = true
   }
 
-  const stringifyRequest = r => loaderUtils.stringifyRequest(loaderContext, r)
+  const stringifyRequest = (r: string) => loaderUtils.stringifyRequest(loaderContext, r)
 
-  const { target, request, minimize, sourceMap, rootContext, resourcePath, resourceQuery } = loaderContext
+  const {
+    target,
+    // request,
+    minimize,
+    sourceMap,
+    rootContext,
+    resourcePath,
+    resourceQuery
+  } = loaderContext
 
   const rawQuery = resourceQuery.slice(1)
   const inheritQuery = `&${rawQuery}`
@@ -67,23 +77,9 @@ module.exports = function(source) {
   const id = hash(isProduction ? shortFilePath + '\n' + source : shortFilePath)
 
   // feature information
-  const hasScoped = descriptor.styles.some(s => s.scoped)
-  const hasFunctional = descriptor.template && descriptor.template.attrs.functional
+  // const hasScoped = descriptor.styles.some(s => s.scoped)
   const needsHotReload =
     !isServer && !isProduction && (descriptor.script || descriptor.template) && options.hotReload !== false
-
-  // template
-  let templateImport = `var render, staticRenderFns`
-  let templateRequest
-  if (descriptor.template) {
-    const src = descriptor.template.src || resourcePath
-    const idQuery = `&id=${id}`
-    const scopedQuery = hasScoped ? `&scoped=true` : ``
-    const attrsQuery = attrsToQuery(descriptor.template.attrs)
-    const query = `?sfc&type=template${idQuery}${scopedQuery}${attrsQuery}${inheritQuery}`
-    const request = (templateRequest = stringifyRequest(src + query))
-    templateImport = `import { render, staticRenderFns } from ${request}`
-  }
 
   // script
   let scriptImport = `var script = {}`
@@ -109,29 +105,26 @@ module.exports = function(source) {
     )
   }
 
-  console.log({ templateImport })
-  console.log({ scriptImport })
-
   let code =
     `
-${templateImport}
 ${scriptImport}
 ${stylesCode}
 
-/* normalize component */
-import normalizer from ${stringifyRequest(`!${componentNormalizerPath}`)}
-var component = normalizer(
-  script,
-  render,
-  staticRenderFns,
-  ${hasFunctional ? `true` : `false`},
-  ${/injectStyles/.test(stylesCode) ? `injectStyles` : `null`},
-  ${hasScoped ? JSON.stringify(id) : `null`},
-  ${isServer ? JSON.stringify(hash(request)) : `null`}
-  ${isShadow ? `,true` : ``}
-)
   `.trim() + `\n`
 
+  // SWYX: TODO: normalizer code from vue-loader
+  // /* normalize component */
+  // import normalizer from ${stringifyRequest(`!${componentNormalizerPath}`)}
+  // var component = normalizer(
+  //   script,
+  //   render,
+  //   staticRenderFns,
+  //   ${hasFunctional ? `true` : `false`},
+  //   ${/injectStyles/.test(stylesCode) ? `injectStyles` : `null`},
+  //   ${hasScoped ? JSON.stringify(id) : `null`},
+  //   ${isServer ? JSON.stringify(hash(request)) : `null`}
+  //   ${isShadow ? `,true` : ``}
+  // )
   // // SWYX: TODO
   // if (descriptor.customBlocks && descriptor.customBlocks.length) {
   //   code += genCustomBlocksCode(descriptor.customBlocks, resourcePath, resourceQuery, stringifyRequest)

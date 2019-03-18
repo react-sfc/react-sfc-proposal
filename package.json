@@ -1,9 +1,12 @@
 {
   "name": "react-sfc-loader",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "dist/react-sfc-loader.js",
   "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "babel-loader": "^8.0.5",
     "chalk": "^2.4.2",

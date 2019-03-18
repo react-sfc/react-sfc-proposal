@@ -27,11 +27,11 @@ test('Inserts name and outputs JavaScript', async () => {
   const json = stats.toJson()
   // // debugger
   json.modules.forEach((m, i) => {
-    console.log(' [index] ' + i, m.source)
+    console.log(' [index] ' + i + '\n', m.source)
     if (m.modules) {
       console.log('submodules', m.modules.length)
       m.modules.forEach((n, j) => {
-        console.log(' [index] ' + j, n.source)
+        console.log('sub [index] ' + i + '-' + j + '\n', n.source)
       })
     }
   })

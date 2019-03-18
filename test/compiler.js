@@ -2,7 +2,7 @@ import path from 'path'
 import webpack from 'webpack'
 import memoryfs from 'memory-fs'
 
-import SFCLoaderPlugin from '../src/plugin'
+import SFCLoaderPlugin from '../dist/plugin'
 
 export default (fixture, options = {}) => {
   const compiler = webpack({
@@ -29,7 +29,7 @@ export default (fixture, options = {}) => {
       rules: [
         {
           test: /\.sfc$/,
-          loader: path.resolve(__dirname, '../src/react-sfc-loader.js')
+          loader: path.resolve(__dirname, '../dist/react-sfc-loader.js')
         },
         // // this will apply to both plain `.js` files
         // // AND `<script>` blocks in `.vue` files

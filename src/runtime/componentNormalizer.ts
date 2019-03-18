@@ -1,19 +1,27 @@
-import { LoaderContextType } from '../types/index'
+import { LoaderContextType } from '../types'
+
+// SWYX: NOTE: punting on making this work in TS
 /* globals __VUE_SSR_CONTEXT__ */
 
 // IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
 // This module is a runtime utility for cleaner component module output and will
 // be included in the final webpack user bundle.
 
+type ThisContext = {
+  $root: any
+  $vnode: any
+  parent: any
+}
 export default function normalizeComponent(
+  this: ThisContext,
   scriptExports: any,
-  render,
-  staticRenderFns,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier /* server only */,
-  shadowMode /* vue-cli only */
+  render?: Function,
+  staticRenderFns?: Function,
+  // functionalTemplate,
+  injectStyles?: Function,
+  scopeId?: string,
+  moduleIdentifier?: string /* server only */,
+  shadowMode?: boolean /* vue-cli only */
 ) {
   // Vue.extend constructor export interop
   var options = typeof scriptExports === 'function' ? scriptExports.options : scriptExports
@@ -25,29 +33,30 @@ export default function normalizeComponent(
     options._compiled = true
   }
 
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
+  // // functional template
+  // if (functionalTemplate) {
+  //   options.functional = true
+  // }
 
   // scopedId
   if (scopeId) {
     options._scopeId = 'data-v-' + scopeId
   }
 
-  var hook
+  var hook: any
   if (moduleIdentifier) {
     // server build
-    hook = function(context: LoaderContextType) {
+    hook = function(this: ThisContext, context: LoaderContextType & { _registeredComponents: any }) {
       // 2.3 injection
       context =
         context || // cached call
         (this.$vnode && this.$vnode.ssrContext) || // stateful
         (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
       // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
+      // // SWYX: NOTE: COMMENTED OUT BC OF GLOBAL
+      // if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+      //   context = __VUE_SSR_CONTEXT__
+      // }
       // inject component styles
       if (injectStyles) {
         injectStyles.call(this, context)
@@ -62,7 +71,7 @@ export default function normalizeComponent(
     options._ssrRegister = hook
   } else if (injectStyles) {
     hook = shadowMode
-      ? function() {
+      ? function(this: ThisContext) {
           injectStyles.call(this, this.$root.$options.shadowRoot)
         }
       : injectStyles
@@ -75,7 +84,7 @@ export default function normalizeComponent(
       options._injectStyles = hook
       // register for functioal component in vue file
       var originalRender = options.render
-      options.render = function renderWithStyleInjection(h, context) {
+      options.render = function renderWithStyleInjection(h: any, context: any) {
         hook.call(context)
         return originalRender(h, context)
       }

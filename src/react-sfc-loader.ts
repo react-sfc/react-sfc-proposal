@@ -7,11 +7,12 @@ const loaderUtils = require('loader-utils')
 const { attrsToQuery } = require('./codegen/utils')
 const { parse } = require('./component-compiler-utils')
 import { parseComponent } from './parse'
-import { LoaderContextType } from './types'
+import { LoaderContextType, SFCBlock } from './types'
+
 const genStylesCode = require('./codegen/styleInjection')
 // const { genHotReloadCode } = require('./codegen/hotReload')
 // const genCustomBlocksCode = require('./codegen/customBlocks')
-// const componentNormalizerPath = require.resolve('./runtime/componentNormalizer')
+import componentNormalizerPath from './runtime/componentNormalizer'
 const { NS } = require('./plugin')
 
 let errorEmitted = false
@@ -32,15 +33,7 @@ module.exports = function(this: LoaderContextType, source: string) {
 
   const stringifyRequest = (r: string) => loaderUtils.stringifyRequest(loaderContext, r)
 
-  const {
-    target,
-    // request,
-    minimize,
-    sourceMap,
-    rootContext,
-    resourcePath,
-    resourceQuery
-  } = loaderContext
+  const { target, request, minimize, sourceMap, rootContext, resourcePath, resourceQuery } = loaderContext
 
   const rawQuery = resourceQuery.slice(1)
   const inheritQuery = `&${rawQuery}`
@@ -77,7 +70,7 @@ module.exports = function(this: LoaderContextType, source: string) {
   const id = hash(isProduction ? shortFilePath + '\n' + source : shortFilePath)
 
   // feature information
-  // const hasScoped = descriptor.styles.some(s => s.scoped)
+  const hasScoped = descriptor.styles.some((s: SFCBlock) => s.scoped)
   const needsHotReload =
     !isServer && !isProduction && (descriptor.script || descriptor.template) && options.hotReload !== false
 
@@ -110,21 +103,20 @@ module.exports = function(this: LoaderContextType, source: string) {
 ${scriptImport}
 ${stylesCode}
 
+/* normalize component */
+import normalizer from ${stringifyRequest(`!${componentNormalizerPath}`)}
+var component = normalizer(
+  script,
+  render,
+  staticRenderFns,
+  // false,
+  ${/injectStyles/.test(stylesCode) ? `injectStyles` : `null`},
+  ${hasScoped ? JSON.stringify(id) : `null`},
+  ${isServer ? JSON.stringify(hash(request)) : `null`}
+  ${isShadow ? `,true` : ``}
+)
   `.trim() + `\n`
 
-  // SWYX: TODO: normalizer code from vue-loader
-  // /* normalize component */
-  // import normalizer from ${stringifyRequest(`!${componentNormalizerPath}`)}
-  // var component = normalizer(
-  //   script,
-  //   render,
-  //   staticRenderFns,
-  //   ${hasFunctional ? `true` : `false`},
-  //   ${/injectStyles/.test(stylesCode) ? `injectStyles` : `null`},
-  //   ${hasScoped ? JSON.stringify(id) : `null`},
-  //   ${isServer ? JSON.stringify(hash(request)) : `null`}
-  //   ${isShadow ? `,true` : ``}
-  // )
   // // SWYX: TODO
   // if (descriptor.customBlocks && descriptor.customBlocks.length) {
   //   code += genCustomBlocksCode(descriptor.customBlocks, resourcePath, resourceQuery, stringifyRequest)

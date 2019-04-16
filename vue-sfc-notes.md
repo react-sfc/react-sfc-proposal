@@ -37,7 +37,7 @@ Everything is catted together and [the component is exported in the final code o
 
 [**getStylesCode**](https://github.com/vuejs/vue-loader/blob/40bcb3d75cebb5227aa21bd82cb601754b0ce2aa/lib/codegen/styleInjection.js)
 
-This code is responsible for handling `<style>` tag requests. It has special handling for CSS Modules and hot reloading them I want to look into in future.
+This code is responsible for handling `<style>` tag requests. It has special handling for CSS Modules and hot reloading them I want to look into in future. [Scoped styles are transformed in a custom PostCSS plugin inside yet another lower level library](https://github.com/vuejs/component-compiler-utils/blob/master/lib/stylePlugins/scoped.ts).
 
 [**genCustomBlocksCode**](https://github.com/vuejs/vue-loader/blob/40bcb3d75cebb5227aa21bd82cb601754b0ce2aa/lib/codegen/customBlocks.js)
 

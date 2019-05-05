@@ -1,4 +1,4 @@
-import { Webpack } from './typesFromTSLoader'
+import { Webpack } from "./typesFromTSLoader"
 export interface ParseOptions {
   source: string
   filename?: string
@@ -14,7 +14,7 @@ export type LoaderContextType = Webpack
 export type attrType = { start?: number; end?: number }
 export type ASTAttr = {
   value: string
-  name: 'lang' | 'scoped' | 'module' | 'src'
+  name: "lang" | "global" | "module" | "src"
 }
 export type maybenum = number | null
 export type parseHTMLOptions = {
@@ -27,7 +27,7 @@ export type parseHTMLOptions = {
   warn?: Function
   start?: Function
   end?: Function
-  pad?: 'line' | 'space'
+  pad?: "line" | "space"
   shouldDecodeNewlinesForHref?: boolean
   shouldDecodeNewlines?: boolean
   outputSourceRange?: boolean
@@ -46,7 +46,7 @@ export interface SFCCustomBlock {
 export interface SFCBlock extends SFCCustomBlock {
   lang?: string
   src?: string
-  scoped?: boolean
+  global?: boolean
   module?: string | boolean
 }
 

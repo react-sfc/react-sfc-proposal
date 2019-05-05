@@ -1,5 +1,5 @@
-import { LoaderContextType, SFCBlock } from '../types'
-import { attrsToQuery } from './utils'
+import { LoaderContextType, SFCBlock } from "../types"
+import { attrsToQuery } from "./utils"
 // const hotReloadAPIPath = JSON.stringify(require.resolve('vue-hot-reload-api'))
 const nonWhitespaceRE = /\S+/
 
@@ -21,11 +21,11 @@ module.exports = function genStyleInjectionCode(
 
   function genStyleRequest(style: SFCBlock, i: number) {
     const src = style.src || resourcePath
-    const attrsQuery = attrsToQuery(style.attrs, 'css')
+    const attrsQuery = attrsToQuery(style.attrs, "css")
     const inheritQuery = `&${loaderContext.resourceQuery.slice(1)}`
     // make sure to only pass id when necessary so that we don't inject
     // duplicate tags when multiple components import the same css file
-    const idQuery = style.scoped ? `&id=${id}` : ``
+    const idQuery = style.global ? `` : `&id=${id}`
     const query = `?sfc&type=style&index=${i}${idQuery}${attrsQuery}${inheritQuery}`
     return stringifyRequest(src + query)
   }
@@ -33,7 +33,7 @@ module.exports = function genStyleInjectionCode(
   function genCSSModulesCode(style: SFCBlock, request: string, i: number) {
     hasCSSModules = true
 
-    const moduleName = style.module === true ? '$style' : style.module
+    const moduleName = style.module === true ? "$style" : style.module
     // // SWYX: TODO
     // if (cssModuleNames.has(moduleName)) {
     //   loaderContext.emitError(`CSS module name ${moduleName} is not unique!`)

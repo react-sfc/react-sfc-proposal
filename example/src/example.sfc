@@ -1,0 +1,16 @@
+<script>
+  import Foo from './foo.sfc'
+  export default function MyComponent() {
+    return (<div>
+    hello world
+    <Foo />
+    </div>)
+  }
+</script>
+
+<style>
+  div {
+    border: 1px solid red;
+    color: green
+  }
+</style>

@@ -1,4 +1,4 @@
-import { SFCDescriptor, LoaderContextType } from './types'
+import { SFCDescriptor, LoaderContextType } from "./types"
 
 type QueryType = {
   type: string
@@ -14,9 +14,9 @@ module.exports = function selectBlock(
   // script
   if (query.type === `script` && descriptor.script) {
     if (appendExtension) {
-      loaderContext.resourcePath += '.' + (descriptor.script.lang || 'js')
+      loaderContext.resourcePath += "." + (descriptor.script.lang || "js")
     }
-    loaderContext.callback(null, descriptor.script.content, descriptor.script.map)
+    loaderContext.callback(null, 'import React from "react"\n' + descriptor.script.content, descriptor.script.map)
     return
   }
 
@@ -24,14 +24,14 @@ module.exports = function selectBlock(
   if (query.type === `style` && query.index != null) {
     const style = descriptor.styles[query.index]
     if (appendExtension) {
-      loaderContext.resourcePath += '.' + (style.lang || 'css')
+      loaderContext.resourcePath += "." + (style.lang || "css")
     }
     loaderContext.callback(null, style.content, style.map)
     return
   }
 
   // custom
-  if (query.type === 'custom' && query.index != null) {
+  if (query.type === "custom" && query.index != null) {
     const block = descriptor.customBlocks[query.index]
     loaderContext.callback(null, block.content, block.map)
     return

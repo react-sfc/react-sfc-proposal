@@ -1,0 +1,12 @@
+<script>
+  export default function Foo() {
+    return <div className="foo">foo</div>
+  }
+</script>
+
+<style>
+  div.foo {
+    border: 1px solid blue;
+    color: black
+  }
+</style>

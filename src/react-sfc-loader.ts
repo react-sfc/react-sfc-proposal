@@ -1,26 +1,29 @@
-const path = require('path')
-const hash = require('hash-sum')
-const qs = require('querystring')
-const plugin = require('./plugin')
-const selectBlock = require('./select')
-const loaderUtils = require('loader-utils')
-const { attrsToQuery } = require('./codegen/utils')
-const { parse } = require('./component-compiler-utils')
-import { parseComponent } from './parse'
-import { LoaderContextType, SFCBlock } from './types'
+const path = require("path")
+const hash = require("hash-sum")
+const qs = require("querystring")
+const plugin = require("./plugin")
+const selectBlock = require("./select")
+const loaderUtils = require("loader-utils")
+const { attrsToQuery } = require("./codegen/utils")
+const { parse } = require("./component-compiler-utils")
+import { parseComponent } from "./parse"
+import {
+  LoaderContextType
+  // , SFCBlock
+} from "./types"
 
-const genStylesCode = require('./codegen/styleInjection')
+const genStylesCode = require("./codegen/styleInjection")
 // const { genHotReloadCode } = require('./codegen/hotReload')
 // const genCustomBlocksCode = require('./codegen/customBlocks')
-import componentNormalizerPath from './runtime/componentNormalizer'
-const { NS } = require('./plugin')
+// import componentNormalizerPath from "./runtime/componentNormalizer"
+const { NS } = require("./plugin")
 
 let errorEmitted = false
 
 module.exports = function(this: LoaderContextType, source: string) {
   const loaderContext = this
 
-  if (!errorEmitted && !loaderContext['thread-loader'] && !loaderContext[NS]) {
+  if (!errorEmitted && !loaderContext["thread-loader"] && !loaderContext[NS]) {
     loaderContext.emitError &&
       loaderContext.emitError(
         new Error(
@@ -33,16 +36,24 @@ module.exports = function(this: LoaderContextType, source: string) {
 
   const stringifyRequest = (r: string) => loaderUtils.stringifyRequest(loaderContext, r)
 
-  const { target, request, minimize, sourceMap, rootContext, resourcePath, resourceQuery } = loaderContext
+  const {
+    target,
+    // request,
+    minimize,
+    sourceMap,
+    rootContext,
+    resourcePath,
+    resourceQuery
+  } = loaderContext
 
   const rawQuery = resourceQuery.slice(1)
   const inheritQuery = `&${rawQuery}`
   const incomingQuery = qs.parse(rawQuery)
   const options = loaderUtils.getOptions(loaderContext) || {}
 
-  const isServer = target === 'node'
+  const isServer = target === "node"
   const isShadow = !!options.shadowMode
-  const isProduction = options.productionMode || minimize || process.env.NODE_ENV === 'production'
+  const isProduction = options.productionMode || minimize || process.env.NODE_ENV === "production"
   const filename = path.basename(resourcePath)
   const context = rootContext || process.cwd()
   const sourceRoot = path.dirname(path.relative(context, resourcePath))
@@ -63,14 +74,14 @@ module.exports = function(this: LoaderContextType, source: string) {
   }
 
   // module id for scoped CSS & hot-reload
-  const rawShortFilePath = path.relative(context, resourcePath).replace(/^(\.\.[\/\\])+/, '')
+  const rawShortFilePath = path.relative(context, resourcePath).replace(/^(\.\.[\/\\])+/, "")
 
-  const shortFilePath = rawShortFilePath.replace(/\\/g, '/') + resourceQuery
+  const shortFilePath = rawShortFilePath.replace(/\\/g, "/") + resourceQuery
 
-  const id = hash(isProduction ? shortFilePath + '\n' + source : shortFilePath)
+  const id = hash(isProduction ? shortFilePath + "\n" + source : shortFilePath)
 
   // feature information
-  const hasScoped = descriptor.styles.some((s: SFCBlock) => s.scoped)
+  // const hasScoped = descriptor.styles.some((s: SFCBlock) => s.scoped)
   const needsHotReload =
     !isServer && !isProduction && (descriptor.script || descriptor.template) && options.hotReload !== false
 
@@ -78,7 +89,7 @@ module.exports = function(this: LoaderContextType, source: string) {
   let scriptImport = `var script = {}`
   if (descriptor.script) {
     const src = descriptor.script.src || resourcePath
-    const attrsQuery = attrsToQuery(descriptor.script.attrs, 'js')
+    const attrsQuery = attrsToQuery(descriptor.script.attrs, "js")
     const query = `?sfc&type=script${attrsQuery}${inheritQuery}`
     const request = stringifyRequest(src + query)
     scriptImport = `import script from ${request}\n` + `export * from ${request}` // support named exports
@@ -103,19 +114,25 @@ module.exports = function(this: LoaderContextType, source: string) {
 ${scriptImport}
 ${stylesCode}
 
-/* normalize component */
-import normalizer from ${stringifyRequest(`!${componentNormalizerPath}`)}
-var component = normalizer(
-  script,
-  render,
-  staticRenderFns,
-  // false,
-  ${/injectStyles/.test(stylesCode) ? `injectStyles` : `null`},
-  ${hasScoped ? JSON.stringify(id) : `null`},
-  ${isServer ? JSON.stringify(hash(request)) : `null`}
-  ${isShadow ? `,true` : ``}
-)
+const component = {
+  exports: script,
+  options: {}
+}
+
   `.trim() + `\n`
+
+  // /* normalize component */
+  // import normalizer from ${stringifyRequest(`!${componentNormalizerPath}`)}
+  // var component = normalizer(
+  //   script,
+  //   render,
+  //   staticRenderFns,
+  //   // false,
+  //   ${/injectStyles/.test(stylesCode) ? `injectStyles` : `null`},
+  //   ${hasScoped ? JSON.stringify(id) : `null`},
+  //   ${isServer ? JSON.stringify(hash(request)) : `null`}
+  //   ${isShadow ? `,true` : ``}
+  // )
 
   // // SWYX: TODO
   // if (descriptor.customBlocks && descriptor.customBlocks.length) {
@@ -131,7 +148,7 @@ var component = normalizer(
   if (!isProduction) {
     // Expose the file's full path in development, so that it can be opened
     // from the devtools.
-    code += `\ncomponent.options.__file = ${JSON.stringify(rawShortFilePath.replace(/\\/g, '/'))}`
+    code += `\ncomponent.options.__file = ${JSON.stringify(rawShortFilePath.replace(/\\/g, "/"))}`
   } else if (options.exposeFilename) {
     // Libraies can opt-in to expose their components' filenames in production builds.
     // For security reasons, only expose the file's basename in production.

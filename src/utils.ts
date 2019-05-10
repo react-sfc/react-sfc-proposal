@@ -8,5 +8,7 @@ export function makeMap(str: string, expectsLowerCase?: boolean) {
   for (let i = 0; i < list.length; i++) {
     map[list[i]] = true
   }
-  return expectsLowerCase ? (val: string) => map[val.toLowerCase()] : (val: string) => map[val]
+  return expectsLowerCase
+    ? (val: string) => map[val.toLowerCase()]
+    : (val: string) => map[val]
 }

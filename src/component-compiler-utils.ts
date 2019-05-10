@@ -15,7 +15,7 @@ export function parse(options: ParseOptions): SFCDescriptor {
     compiler,
     compilerParseOptions = { pad: 'line' } as parseHTMLOptions,
     sourceRoot = '',
-    needMap = true
+    needMap = true,
   } = options
   const cacheKey = hash(filename + source)
 
@@ -35,7 +35,13 @@ export function parse(options: ParseOptions): SFCDescriptor {
     if (output.styles) {
       output.styles.forEach(style => {
         if (!style.src) {
-          style.map = generateSourceMap(filename, source, style.content, sourceRoot, compilerParseOptions.pad)
+          style.map = generateSourceMap(
+            filename,
+            source,
+            style.content,
+            sourceRoot,
+            compilerParseOptions.pad
+          )
         }
       })
     }
@@ -54,7 +60,7 @@ function generateSourceMap(
   // ): RawSourceMap {
   const map = new SourceMapGenerator({
     file: filename.replace(/\\/g, '/'),
-    sourceRoot: sourceRoot.replace(/\\/g, '/')
+    sourceRoot: sourceRoot.replace(/\\/g, '/'),
   })
   let offset = 0
   if (!pad) {
@@ -71,12 +77,12 @@ function generateSourceMap(
         source: filename,
         original: {
           line: index + 1 + offset,
-          column: 0
+          column: 0,
         },
         generated: {
           line: index + 1,
-          column: 0
-        }
+          column: 0,
+        },
       })
     }
   })

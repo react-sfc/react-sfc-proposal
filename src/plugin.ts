@@ -42,7 +42,9 @@ class SFCLoaderPlugin {
         let normalModuleLoader
         if (Object.isFrozen(compilation.hooks)) {
           // webpack 5
-          normalModuleLoader = require('webpack/lib/NormalModule').getCompilationHooks(compilation).loader
+          normalModuleLoader = require('webpack/lib/NormalModule').getCompilationHooks(
+            compilation
+          ).loader
         } else {
           normalModuleLoader = compilation.hooks.normalModuleLoader
         }
@@ -78,7 +80,9 @@ class SFCLoaderPlugin {
     }
 
     if (sfcRule.oneOf) {
-      throw new Error(`[sfcLoaderPlugin Error] react-sfc-loader 15 currently does not support sfc rules with oneOf.`)
+      throw new Error(
+        `[sfcLoaderPlugin Error] react-sfc-loader 15 currently does not support sfc rules with oneOf.`
+      )
     }
 
     // get the normlized "use" for sfc files
@@ -104,7 +108,9 @@ class SFCLoaderPlugin {
 
     // for each user rule (expect the sfc rule), create a cloned rule
     // that targets the corresponding language blocks in *.sfc files.
-    const clonedRules = rules.filter((r: string) => r !== sfcRule).map(cloneRule)
+    const clonedRules = rules
+      .filter((r: string) => r !== sfcRule)
+      .map(cloneRule)
 
     // global pitcher (responsible for injecting template compiler loader & CSS
     // post loader)
@@ -116,8 +122,8 @@ class SFCLoaderPlugin {
       },
       options: {
         cacheDirectory: sfcLoaderUse.options.cacheDirectory,
-        cacheIdentifier: sfcLoaderUse.options.cacheIdentifier
-      }
+        cacheIdentifier: sfcLoaderUse.options.cacheIdentifier,
+      },
     }
 
     // replace original rules
@@ -130,7 +136,11 @@ function createMatcher(fakeFile: string) {
     const clone = Object.assign({}, rule)
     delete clone.include
     const normalized = RuleSet.normalizeRule(clone, {}, '')
-    return !rule.enforce && normalized.resource && (normalized.resource(fakeFile) as boolean)
+    return (
+      !rule.enforce &&
+      normalized.resource &&
+      (normalized.resource(fakeFile) as boolean)
+    )
   }
 }
 
@@ -147,7 +157,7 @@ function cloneRule(rule: RuleType) {
       test: (resource: ResourceType) => {
         currentResource = resource
         return true
-      }
+      },
     },
     resourceQuery: (query: string) => {
       const parsed = qs.parse(query.slice(1))
@@ -165,7 +175,7 @@ function cloneRule(rule: RuleType) {
         return false
       }
       return true
-    }
+    },
   })
 
   if (rule.oneOf) {

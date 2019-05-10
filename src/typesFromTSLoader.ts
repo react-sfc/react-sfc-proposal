@@ -18,7 +18,11 @@ export interface ErrorInfo {
   context: string
 }
 
-export type AsyncCallback = (err: Error | WebpackError | null, source?: string, map?: string) => void
+export type AsyncCallback = (
+  err: Error | WebpackError | null,
+  source?: string,
+  map?: string
+) => void
 
 /**
  * Details here: https://webpack.github.io/docs/loaders.html#loader-context
@@ -77,7 +81,11 @@ export interface Webpack {
   /**
    * Resolve a request like a require expression.
    */
-  resolve: (context: string, request: string, callback: (err: Error, result: string) => void) => void
+  resolve: (
+    context: string,
+    request: string,
+    callback: (err: Error, result: string) => void
+  ) => void
   /**
    * Resolve a request like a require expression.
    */
@@ -215,10 +223,20 @@ export interface Resolve {
   unsafeCache?: RegExp | RegExp[] | boolean
 }
 
-export type ResolveSync = (context: string | undefined, path: string, moduleName: string) => string
+export type ResolveSync = (
+  context: string | undefined,
+  path: string,
+  moduleName: string
+) => string
 
-export interface WatchHost extends typescript.WatchCompilerHostOfFilesAndCompilerOptions<typescript.BuilderProgram> {
-  invokeFileWatcher(fileName: string, eventKind: typescript.FileWatcherEventKind): void
+export interface WatchHost
+  extends typescript.WatchCompilerHostOfFilesAndCompilerOptions<
+    typescript.BuilderProgram
+  > {
+  invokeFileWatcher(
+    fileName: string,
+    eventKind: typescript.FileWatcherEventKind
+  ): void
   invokeDirectoryWatcher(directory: string, fileAddedOrRemoved: string): void
   updateRootFileNames(): void
 }
@@ -251,7 +269,9 @@ export interface TSInstance {
 
   otherFiles: TSFiles
   watchHost?: WatchHost
-  watchOfFilesAndCompilerOptions?: typescript.WatchOfFilesAndCompilerOptions<typescript.BuilderProgram>
+  watchOfFilesAndCompilerOptions?: typescript.WatchOfFilesAndCompilerOptions<
+    typescript.BuilderProgram
+  >
   program?: typescript.Program
   hasUnaccountedModifiedFiles?: boolean
   changedFilesList?: boolean
@@ -312,7 +332,9 @@ export interface LoaderOptions {
   appendTsSuffixTo: RegExp[]
   appendTsxSuffixTo: RegExp[]
   happyPackMode: boolean
-  getCustomTransformers?: string | (() => typescript.CustomTransformers | undefined)
+  getCustomTransformers?:
+    | string
+    | (() => typescript.CustomTransformers | undefined)
   experimentalWatchApi: boolean
   allowTsInNodeModules: boolean
   experimentalFileCaching: boolean

@@ -8,12 +8,15 @@ import { parseHTMLOptions, maybenum, attrType } from './types'
 export const no = () => false
 
 export const isUnaryTag = makeMap(
-  'area,base,br,col,embed,frame,hr,img,input,isindex,keygen,' + 'link,meta,param,source,track,wbr'
+  'area,base,br,col,embed,frame,hr,img,input,isindex,keygen,' +
+    'link,meta,param,source,track,wbr'
 )
 
 // Elements that you can, intentionally, leave open
 // (and which close themselves)
-export const canBeLeftOpenTag = makeMap('colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr,source')
+export const canBeLeftOpenTag = makeMap(
+  'colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr,source'
+)
 
 // HTML5 tags https://html.spec.whatwg.org/multipage/indices.html#elements-3
 // Phrasing Content https://html.spec.whatwg.org/multipage/dom.html#phrasing-content
@@ -66,14 +69,15 @@ const decodingMap = {
   '&amp;': '&',
   '&#10;': '\n',
   '&#9;': '\t',
-  '&#39;': "'"
+  '&#39;': "'",
 }
 const encodedAttr = /&(?:lt|gt|quot|amp|#39);/g
 const encodedAttrWithNewLines = /&(?:lt|gt|quot|amp|#39|#10|#9);/g
 
 // #5992
 const isIgnoreNewlineTag = makeMap('pre,textarea', true)
-const shouldIgnoreFirstNewline = (tag: string, html: string) => tag && isIgnoreNewlineTag(tag) && html[0] === '\n'
+const shouldIgnoreFirstNewline = (tag: string, html: string) =>
+  tag && isIgnoreNewlineTag(tag) && html[0] === '\n'
 
 function decodeAttr(value: string, shouldDecodeNewlines?: boolean) {
   const re = shouldDecodeNewlines ? encodedAttrWithNewLines : encodedAttr
@@ -113,7 +117,11 @@ export function parseHTML(html: string, options: parseHTMLOptions = {}) {
 
           if (commentEnd >= 0) {
             if (options.shouldKeepComment && options.comment) {
-              options.comment(html.substring(4, commentEnd), index, index + commentEnd + 3)
+              options.comment(
+                html.substring(4, commentEnd),
+                index,
+                index + commentEnd + 3
+              )
             }
             advance(commentEnd + 3)
             continue
@@ -190,7 +198,11 @@ export function parseHTML(html: string, options: parseHTMLOptions = {}) {
       let endTagLength = 0
       const stackedTag = lastTag.toLowerCase()
       const reStackedTag =
-        reCache[stackedTag] || (reCache[stackedTag] = new RegExp('([\\s\\S]*?)(</' + stackedTag + '[^>]*>)', 'i'))
+        reCache[stackedTag] ||
+        (reCache[stackedTag] = new RegExp(
+          '([\\s\\S]*?)(</' + stackedTag + '[^>]*>)',
+          'i'
+        ))
       const rest = html.replace(reStackedTag, function(all, text, endTag) {
         endTagLength = endTag.length
         if (!isPlainTextElement(stackedTag) && stackedTag !== 'noscript') {
@@ -213,8 +225,14 @@ export function parseHTML(html: string, options: parseHTMLOptions = {}) {
 
     if (html === last) {
       options.chars && options.chars(html)
-      if (process.env.NODE_ENV !== 'production' && !stack.length && options.warn) {
-        options.warn(`Mal-formatted tag at end of template: "${html}"`, { start: index + html.length })
+      if (
+        process.env.NODE_ENV !== 'production' &&
+        !stack.length &&
+        options.warn
+      ) {
+        options.warn(`Mal-formatted tag at end of template: "${html}"`, {
+          start: index + html.length,
+        })
       }
       break
     }
@@ -233,13 +251,14 @@ export function parseHTML(html: string, options: parseHTMLOptions = {}) {
       const match: matchType = {
         tagName: start[1],
         attrs: [],
-        start: index
+        start: index,
       }
       advance(start[0].length)
       let end, attr: attrType
       while (
         !(end = html.match(startTagClose)) &&
-        (attr = (html.match(dynamicArgAttribute) || html.match(attribute)) as attrType)
+        (attr = (html.match(dynamicArgAttribute) ||
+          html.match(attribute)) as attrType)
       ) {
         attr.start = index
         advance(attr[0].length)
@@ -277,10 +296,12 @@ export function parseHTML(html: string, options: parseHTMLOptions = {}) {
       const args = match.attrs[i] || []
       const value = args[3] || args[4] || args[5] || ''
       const shouldDecodeNewlines =
-        tagName === 'a' && args[1] === 'href' ? options.shouldDecodeNewlinesForHref : options.shouldDecodeNewlines
+        tagName === 'a' && args[1] === 'href'
+          ? options.shouldDecodeNewlinesForHref
+          : options.shouldDecodeNewlines
       attrs[i] = {
         name: args[1],
-        value: decodeAttr(value, shouldDecodeNewlines)
+        value: decodeAttr(value, shouldDecodeNewlines),
       }
       if (process.env.NODE_ENV !== 'production' && options.outputSourceRange) {
         // swyx: there was a possible bug here typescript caught with the args
@@ -295,7 +316,7 @@ export function parseHTML(html: string, options: parseHTMLOptions = {}) {
         lowerCasedTag: tagName.toLowerCase(),
         attrs: attrs,
         start: match.start,
-        end: match.end
+        end: match.end,
       })
       lastTag = tagName
     }
@@ -326,8 +347,15 @@ export function parseHTML(html: string, options: parseHTMLOptions = {}) {
     if (pos >= 0) {
       // Close all the open elements, up the stack
       for (let i = stack.length - 1; i >= pos; i--) {
-        if (process.env.NODE_ENV !== 'production' && (i > pos || !tagName) && options.warn) {
-          options.warn(`tag <${stack[i].tag}> has no matching end tag.`, { start: stack[i].start, end: stack[i].end })
+        if (
+          process.env.NODE_ENV !== 'production' &&
+          (i > pos || !tagName) &&
+          options.warn
+        ) {
+          options.warn(`tag <${stack[i].tag}> has no matching end tag.`, {
+            start: stack[i].start,
+            end: stack[i].end,
+          })
         }
         if (options.end) {
           options.end(stack[i].tag, start, end)

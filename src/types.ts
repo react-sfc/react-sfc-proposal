@@ -46,7 +46,7 @@ export interface SFCCustomBlock {
 export interface SFCBlock extends SFCCustomBlock {
   lang?: string
   src?: string
-  global?: boolean
+  scoped?: boolean
   module?: string | boolean
 }
 

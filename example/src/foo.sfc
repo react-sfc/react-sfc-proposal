@@ -1,12 +1,11 @@
 <script>
-  export default function Foo() {
-    return <div className="foo">foo</div>
+  export default function Foo({txt}) {
+    const [count, setCount] = React.useState(0)
+    return <div><h1>{txt}</h1><button onClick={() => setCount(count + 1)}>Clicked {count} times</button></div>
   }
 </script>
-
 <style>
-  div.foo {
-    border: 1px solid blue;
+  h1 {
     color: black
   }
 </style>

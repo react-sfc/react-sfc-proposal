@@ -3,7 +3,7 @@
     "outDir": "dist",
     "module": "commonjs",
     "target": "es6",
-    "lib": ["esnext"],
+    "lib": ["esnext", "dom"],
     "allowJs": false,
     "jsx": "react",
     "moduleResolution": "node",

@@ -5,7 +5,7 @@ const plugin = require('./plugin')
 const selectBlock = require('./select')
 const loaderUtils = require('loader-utils')
 const { attrsToQuery } = require('./codegen/utils')
-const { parse } = require('./component-compiler-utils')
+const { parse } = require('@vue/component-compiler-utils')
 import { parseComponent } from './parse'
 import {
   LoaderContextType,
@@ -68,6 +68,16 @@ module.exports = function(this: LoaderContextType, source: string) {
     needMap: sourceMap,
   })
 
+  /// failed attempt at adding nesting
+  // descriptor.styles = descriptor.styles.map((style: { content: string }) => {
+  //   const newStyle = {
+  //     ...style,
+  //     content: `div.potato { ${style.content} }`,
+  //   }
+  //   return newStyle
+  // })
+  // console.log({ styles: descriptor.styles })
+
   // if the query has a type field, this is a language block request
   // e.g. foo.sfc?type=template&id=xxxxx
   // and we will return early
@@ -105,7 +115,7 @@ module.exports = function(this: LoaderContextType, source: string) {
     const query = `?sfc&type=script${attrsQuery}${inheritQuery}`
     const request = stringifyRequest(src + query)
     scriptImport =
-      `import script from ${request}\n` + `export * from ${request}` // support named exports
+      `import Script from ${request}\n` + `export * from ${request}` // support named exports
   }
 
   // styles
@@ -124,11 +134,18 @@ module.exports = function(this: LoaderContextType, source: string) {
 
   let code =
     `
+import React from 'react'
 ${scriptImport}
 ${stylesCode}
 
+function componentWrapper(props) {
+  return React.createElement("div", {
+    'data-sfc-style': '${id}'
+  }, React.createElement(Script, props));
+}
+
 const component = {
-  exports: script,
+  exports: componentWrapper,
   options: {}
 }
 
@@ -171,7 +188,6 @@ const component = {
   }
 
   code += `\nexport default component.exports`
-  console.log({ code })
   return code
 }
 

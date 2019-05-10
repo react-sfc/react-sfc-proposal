@@ -94,7 +94,7 @@ export function parseComponent(
         block.lang = attr.value
       }
       if (attr.name === 'global') {
-        block.global = true
+        block.scoped = true
       }
       if (attr.name === 'module') {
         block.module = attr.value || true

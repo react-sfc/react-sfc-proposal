@@ -1,9 +1,9 @@
-import { LoaderContextType, SFCBlock } from "../types"
-import { attrsToQuery } from "./utils"
+import { LoaderContextType, SFCBlock } from '../types'
+import { attrsToQuery } from './utils'
 // const hotReloadAPIPath = JSON.stringify(require.resolve('vue-hot-reload-api'))
 const nonWhitespaceRE = /\S+/
 
-module.exports = function genStyleInjectionCode(
+module.exports = function genStylesCode(
   loaderContext: LoaderContextType,
   styles: SFCBlock[],
   id: string,
@@ -21,11 +21,11 @@ module.exports = function genStyleInjectionCode(
 
   function genStyleRequest(style: SFCBlock, i: number) {
     const src = style.src || resourcePath
-    const attrsQuery = attrsToQuery(style.attrs, "css")
+    const attrsQuery = attrsToQuery(style.attrs, 'css')
     const inheritQuery = `&${loaderContext.resourceQuery.slice(1)}`
     // make sure to only pass id when necessary so that we don't inject
     // duplicate tags when multiple components import the same css file
-    const idQuery = style.global ? `` : `&id=${id}`
+    const idQuery = style.scoped ? `` : `&id=${id}`
     const query = `?sfc&type=style&index=${i}${idQuery}${attrsQuery}${inheritQuery}`
     return stringifyRequest(src + query)
   }
@@ -33,7 +33,7 @@ module.exports = function genStyleInjectionCode(
   function genCSSModulesCode(style: SFCBlock, request: string, i: number) {
     hasCSSModules = true
 
-    const moduleName = style.module === true ? "$style" : style.module
+    const moduleName = style.module === true ? '$style' : style.module
     // // SWYX: TODO
     // if (cssModuleNames.has(moduleName)) {
     //   loaderContext.emitError(`CSS module name ${moduleName} is not unique!`)
@@ -74,7 +74,8 @@ module.exports = function genStyleInjectionCode(
   }
 
   // empty styles: with no `src` specified or only contains whitespaces
-  const isNotEmptyStyle = (style: SFCBlock) => style.src || nonWhitespaceRE.test(style.content)
+  const isNotEmptyStyle = (style: SFCBlock) =>
+    style.src || nonWhitespaceRE.test(style.content)
   // explicit injection is needed in SSR (for critical CSS collection)
   // or in Shadow Mode (for injection into shadow root)
   // In these modes, vue-style-loader exports objects with the __inject__
@@ -93,7 +94,8 @@ module.exports = function genStyleInjectionCode(
       if (isNotEmptyStyle(style)) {
         const request = genStyleRequest(style, i)
         styleInjectionCode +=
-          `var style${i} = require(${request})\n` + `if (style${i}.__inject__) style${i}.__inject__(context)\n`
+          `var style${i} = require(${request})\n` +
+          `if (style${i}.__inject__) style${i}.__inject__(context)\n`
         if (style.module) genCSSModulesCode(style, request, i)
       }
     })

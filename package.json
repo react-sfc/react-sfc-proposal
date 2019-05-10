@@ -59,7 +59,7 @@
   },
   "lint-staged": {
     "linters": {
-      "*.{ts,tsx,js,jsx,css,scss,md}": [
+      "src/*.{ts,tsx,js,jsx,css,scss,md}": [
         "prettier --trailing-comma es5 --single-quote --write",
         "git add"
       ],

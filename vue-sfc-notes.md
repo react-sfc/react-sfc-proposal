@@ -1,3 +1,8 @@
+---
+route: /vuesfc
+name: Vue SFC Notes
+---
+
 # How Vue-Loader works
 
 Vue-loader is key to making Vue SFCs work and therefore a significant part of the Vue Developer Experience.

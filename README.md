@@ -100,13 +100,13 @@ What about data requirements?
 
 ```vue
 <gql>
-query Blogposts {
-  posts {
+query Blogposts \{
+  posts \{
     _id
     title
     date
-  }
-}
+  \}
+\}
 </gql>
 <jsx v2>
   import BlogCard from 'comopnents/BlogCard'
@@ -304,7 +304,7 @@ query Blogposts {
 
 <Playground>
   {() => {
-    const someVar = 'value'
+    const someVar = "value"
     return <Button example={someVar} />
   }}
 </Playground>

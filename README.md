@@ -85,7 +85,7 @@ While we're at it, lets locally opt into [JSX 2.0](https://github.com/facebook/j
 
 ```vue
 <jsx v2>
-  import UserProfile from 'comopnents/UserProfile'
+  import UserProfile from 'components/UserProfile'
   import UserContext from 'contexts/User'
   export default function() {
     const userData = useContext(UserContext) // this is an object
@@ -109,7 +109,7 @@ query Blogposts \{
 \}
 </gql>
 <jsx v2>
-  import BlogCard from 'comopnents/BlogCard'
+  import BlogCard from 'components/BlogCard'
   export default function({data, loading}) {
     if (loading) return "loading..."
     return (
@@ -150,7 +150,7 @@ query Blogposts {
 </jsx>
 <jsx v2>
   // here we can just focus on our component happy path
-  import BlogCard from 'comopnents/BlogCard'
+  import BlogCard from 'components/BlogCard'
   export default function({data}) {
     return (<div>
               {data.posts.map(post => <BlogCard post />

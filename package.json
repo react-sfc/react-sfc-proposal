@@ -53,7 +53,8 @@
     "test": "jest",
     "build": "tsc",
     "watch": "tsc -w",
-    "docs": "gatsby develop"
+    "docs": "gatsby develop",
+    "docs:build": "gatsby build"
   },
   "husky": {
     "hooks": {

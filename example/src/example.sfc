@@ -5,11 +5,10 @@
       <div>
         <h1>I am parent and am unaffected by child CSS</h1>
         <Foo txt="I am nested and styled black" />
-    </div>
+      </div>
     )
   }
 </script>
-
 <style>
   div {
     border: 1px solid red;

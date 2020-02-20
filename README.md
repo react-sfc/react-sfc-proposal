@@ -1,3 +1,7 @@
+:warning: my thoughts on how a react SFC format have evolved - for updated thoughts pls check here for now https://www.swyx.io/writing/react-distros/
+
+---
+
 # React Single File Components
 
 Some thoughts on bringing Single File Components to React.

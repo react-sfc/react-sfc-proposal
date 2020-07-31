@@ -212,8 +212,6 @@ Stepping back from concrete examples to discuss how this might affect DX. In a s
 Component.jsx
 Component.scss
 Component.graphql
-Component.stories.js
-Component.test.js
 ```
 
 we have
@@ -221,8 +219,8 @@ we have
 ```js
 export default {
   STYLE: ``, // etc
-  DATA:
-  RENDER: props => <div /> // etc
+  DATA: ``, // etc
+  RENDER: // etc
 }
 ```
 

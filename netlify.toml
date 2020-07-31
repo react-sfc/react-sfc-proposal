@@ -1,4 +1,0 @@
-# just for hosting the docs
-[build]
-  command = "yarn run docs:build"
-  publish = "public"

@@ -29,8 +29,7 @@ Any new file format starts with a handicap of not working with existing tooling 
 Here is how we might write a React Single File Component:
 
 ```js
-export default {
-  STYLE: `
+export const STYLE = `
     div {
       /* scoped by default */
       background-color: papayawhip;
@@ -38,23 +37,23 @@ export default {
         border-color: cadetblue;
       }
     }
-  `,
-  RENDER({onClick}) {
-    useEffect(() => console.log('rerendered')) // no need for React import
-    return (
-    <div>
-      Some Text
-      <MyButton {{onClick}}>
-        My Call To Action
-      </MyButton>
-    </div>
-    )
-  }
+  `
+
+export default ({onClick}) => {
+  useEffect(() => console.log('rerendered')) // no need for React import
+  return (
+  <div>
+    Some Text
+    <MyButton {...{onClick}}>
+      My Call To Action
+    </MyButton>
+  </div>
+  )
 }
 
 // I can define inline Components like normal
 function MyButton({onClick}) {
-  return <button className="Button" {{onClick}}>{children}</button>
+  return <button className="Button" {...{onClick}}>{children}</button>
 }
 ```
 
@@ -69,17 +68,13 @@ These require more work done by the surrounding compiler/distribution, and offer
 We can switch nicely from no-runtime scoped styles to CSS-in-JS:
 
 ```js
-export default {
-  STYLE: props => `
+export const STYLE = props => `
     div {
       // scoped by default
       background-color: ${props.bgColor || 'papayawhip'};
     }
-  `,
-  RENDER({onClick}) {
-    // etc
-  }
-}
+  `
+// etc
 ```
 
 _Note: there are smaller details to sweat here with regards to passing down className, but we're staying high level for now_
@@ -91,16 +86,15 @@ We can declare mutable state:
 ```js
 let count = 0
 
-export default {
-  STYLE: `
+export const STYLE = `
     button {
       // scoped by default
       background-color: ${count > 5 ? 'red' : 'papayawhip'};
     }
-  `,
-  RENDER() {
-    return <button onClick={() => count++}>Click {count}</button>
-  }
+  `
+
+export default () => {
+  return <button onClick={() => count++}>Click {count}</button>
 }
 ```
 
@@ -111,19 +105,22 @@ and this is transformed to the appropriate React APIs.
 
 
 ```js
-let [count, setCount] = useState(0)
-
-export default {
-  STYLE: `
-    button {
-      // scoped by default
-      background-color: ${count > 5 ? 'red' : 'papayawhip'};
-    }
-  `,
-  RENDER() {
-    return <button onClick={() => setCount(count++)}>Click {count}</button>
-  }
-}
+export default const FILENAME = () => {
+  const [count, setCount] = useState(0);
+  return (
+    <>
+      <button onClick={() => setCount(count++)}>Click {count}</button>
+      <style jsx>
+        {`
+          button {
+            // scoped by default
+            background-color: ${count > 5 ? "red" : "papayawhip"};
+          }
+        `}
+      </style>
+    </>
+  );
+};
 ```
 
 </details>
@@ -147,27 +144,24 @@ function onSubmit(event) {
   })
 }
 
-export default {
-  // STYLE: etc,
-  RENDER() {
-    return (
-      <form onSubmit={onSubmit}>
-        <label>
-          First Name
-          <input type="text" bind:value={data.firstName} />
-        </label>
-        <label>
-          Last Name
-          <input type="text" bind:value={data.lastName} />
-        </label>
-        <label>
-          Age
-          <input type="number" bind:value={data.age} />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
-    )
-  }
+export default () => {
+  return (
+    <form onSubmit={onSubmit}>
+      <label>
+        First Name
+        <input type="text" bind:value={data.firstName} />
+      </label>
+      <label>
+        Last Name
+        <input type="text" bind:value={data.lastName} />
+      </label>
+      <label>
+        Age
+        <input type="number" bind:value={data.age} />
+      </label>
+      <button type="submit">Submit</button>
+    </form>
+  )
 }
 ```
 
@@ -177,16 +171,16 @@ export default {
 The future of React is [Render-as-you-Fetch](https://reactjs.org/docs/concurrent-mode-suspense.html#approach-3-render-as-you-fetch-using-suspense) data, and being able to statically extract the data dependencies from the component (without rendering it) is important to avoid Data waterfalls:
 
 ```js
-export default {
-  GRAPHQL: `
+export const GRAPHQL = `
     query MYPOSTS {
       posts {
         title
         author
       }
     }
-  `,
-  RENDER(props, {data, status}) {
+  `
+
+export default function MYFILE (props, {data, status}) {
     if (typeof status === Error) return <div>Error {data.state.message}</div>
     return (
       <div>
@@ -217,11 +211,9 @@ Component.graphql
 we have
 
 ```js
-export default {
-  STYLE: ``, // etc
-  DATA: ``, // etc
-  RENDER: // etc
-}
+export const STYLE // etc
+export const GRAPHQL // etc
+export default () => <div /> // etc
 ```
 
 in a file. Why would we exchange file separation for a super long file? Although there are ways to mitigate this, it is not very appealing on its own.

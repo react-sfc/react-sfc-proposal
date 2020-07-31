@@ -1,9 +1,3 @@
-:warning: my thoughts on how a react SFC format have evolved - for updated thoughts pls check here for now https://www.swyx.io/writing/react-distros/
-
-The old proposal is in [the v1 branch](https://github.com/react-sfc/react-sfc-proposal/tree/v1-Proposal).
-
----
-
 # React Single File Components
 
 Some thoughts on bringing Single File Components to React.
@@ -255,6 +249,8 @@ However, to the extent that the React SFC loader is a single entry point to webp
   - https://www.reddit.com/r/reactjs/comments/9495ft/single_file_components_no_one_misses_it/
   - every few months it pops up: https://www.reddit.com/r/reactjs/search?q=single%20file%20components&restrict_sr=1
 - [JSX 2.0](https://github.com/facebook/jsx/issues/65)
+- https://www.swyx.io/writing/react-distros/
+- The old proposal is in [the v1 branch](https://github.com/react-sfc/react-sfc-proposal/tree/v1-Proposal).
 
 ## Am I missing some obvious idea or some critical flaw?
 

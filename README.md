@@ -174,7 +174,7 @@ export default {
 
 ### GraphQL
 
-The future of React is [Render-as-you-Fetch](https://reactjs.org/docs/concurrent-mode-suspense.html#approach-3-render-as-you-fetch-using-suspense) data, and being able to statically extract the data dependencies from the component without rendering it is important for the fastest possible Suspense experiences:
+The future of React is [Render-as-you-Fetch](https://reactjs.org/docs/concurrent-mode-suspense.html#approach-3-render-as-you-fetch-using-suspense) data, and being able to statically extract the data dependencies from the component (without rendering it) is important to avoid Data waterfalls:
 
 ```js
 export default {

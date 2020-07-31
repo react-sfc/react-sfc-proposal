@@ -10,6 +10,9 @@ Some thoughts on bringing Single File Components to React.
 
 ## Table of Contents
 
+<!-- START doctoc -->
+<!-- END doctoc -->
+
 ## Why? I don't need this!
 
 That's right, you don't -need- it. SFCs are always sugar, just like JSX. You don't need it, but when it is enough of a community standard it makes things nicer for almost everyone. SFC's aren't a required part of Vue, but they are a welcome community norm.

@@ -32,7 +32,7 @@ Here is how we might write a React Single File Component:
 export default {
   STYLE: `
     div {
-      // scoped by default
+      /* scoped by default */
       background-color: papayawhip;
       .Button {
         border-color: cadetblue;
@@ -74,9 +74,6 @@ export default {
     div {
       // scoped by default
       background-color: ${props.bgColor || 'papayawhip'};
-      .Button {
-        border-color: cadetblue;
-      }
     }
   `,
   RENDER({onClick}) {

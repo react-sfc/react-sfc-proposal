@@ -2,27 +2,24 @@
 
 Some thoughts on bringing Single File Components to React.
 
+
+
 ## Table of Contents
 
 <!-- START doctoc -->
 <!-- END doctoc -->
 
-## Why? I don't need this!
-
-That's right, you don't -need- it. SFCs are always sugar, just like JSX. You don't need it, but when it is enough of a community standard it makes things nicer for almost everyone. SFC's aren't a required part of Vue, but they are a welcome community norm.
-
-The goal isn't to evaluate this idea based on need. In my mind this will live or die based on how well it accomplishes two goals:
-
-- For beginners, provide a blessed structure in a chaotic world of anything-goes.
-- For experts, provide a nicer DX by encoding extremely common boilerplatey patterns in syntax.
-
-Any new file format starts with a handicap of not working with existing tooling e.g. syntax highlighting. So a successful React SFC effort will also need to have a plan for critical tooling.
 
 ## Design Goals
 
 - Stay "Close to JavaScript" to benefit from existing tooling: syntax highlighting, autocomplete/autoimport, static exports, TypeScript
 - Have easy upgrade paths to go from a basic component to dynamic styles, or add state, or extract graphql dependencies
 - Reduce verbosity without sacrificing readability
+
+## In 1 image
+
+![image](https://user-images.githubusercontent.com/6764957/89126435-3c8c9900-d518-11ea-93b2-9f2f7df14db5.png)
+
 
 ## Basic Proposal
 
@@ -197,6 +194,18 @@ export default function MYFILE (props, {data, status}) {
   }
 }
 ```
+
+
+## Why? I don't need this!
+
+That's right, you don't -need- it. SFCs are always sugar, just like JSX. You don't need it, but when it is enough of a community standard it makes things nicer for almost everyone. SFC's aren't a required part of Vue, but they are a welcome community norm.
+
+The goal isn't to evaluate this idea based on need. In my mind this will live or die based on how well it accomplishes two goals:
+
+- For beginners, provide a blessed structure in a chaotic world of anything-goes.
+- For experts, provide a nicer DX by encoding extremely common boilerplatey patterns in syntax.
+
+Any new file format starts with a handicap of not working with existing tooling e.g. syntax highlighting. So a successful React SFC effort will also need to have a plan for critical tooling.
 
 ## General principle: Loaders vs SFCs
 

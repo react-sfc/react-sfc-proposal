@@ -5,8 +5,10 @@ Some thoughts on bringing Single File Components to React.
 Reference implementation:
 
 - Rollup: https://github.com/sw-yx/rollup-plugin-react-sfc
-- Webpack: (tbd)
+- Webpack: (tbd but i am squatting on `react-sfc-loader` - lmk if you want to work on this)
 - Parcel: (tbd)
+- Vite: (tbd)
+- Sandpack?
 
 ## Table of Contents
 

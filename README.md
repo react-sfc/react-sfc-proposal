@@ -195,6 +195,25 @@ export default function MYFILE (props, {data, status}) {
 }
 ```
 
+### Dev Optimizations
+
+We can offer other compile time optimizations for React:
+
+- Named State Hooks
+
+Automatically insert `useDebugValue` for each `useState`:
+
+```js
+function useStateWithLabel(initialValue, name) {
+    const [value, setValue] = useState(initialValue);
+    useDebugValue(`${name}: ${value}`);
+    return [value, setValue];
+}
+```
+
+- Auto optimized useEffect
+
+Automatically insert all dependencies when using `useAutoEffect`, exactly similar to https://github.com/yuchi/hooks.macro
 
 ## Why? I don't need this!
 

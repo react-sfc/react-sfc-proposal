@@ -2,7 +2,11 @@
 
 Some thoughts on bringing Single File Components to React.
 
+Reference implementation:
 
+- Rollup: https://github.com/sw-yx/rollup-plugin-react-sfc
+- Webpack: (tbd)
+- Parcel: (tbd)
 
 ## Table of Contents
 

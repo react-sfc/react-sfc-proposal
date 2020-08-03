@@ -12,8 +12,24 @@ Reference implementation:
 
 ## Table of Contents
 
-<!-- START doctoc -->
-<!-- END doctoc -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Design Goals](#design-goals)
+- [In 1 image](#in-1-image)
+- [Basic Proposal](#basic-proposal)
+- [Advanced Opportunities](#advanced-opportunities)
+  - [Optional CSS in JS](#optional-css-in-js)
+  - [State](#state)
+  - [GraphQL](#graphql)
+  - [Dev Optimizations](#dev-optimizations)
+- [Why? I don't need this!](#why-i-dont-need-this)
+- [General principle: Loaders vs SFCs](#general-principle-loaders-vs-sfcs)
+- [Prior art](#prior-art)
+- [Am I missing some obvious idea or some critical flaw?](#am-i-missing-some-obvious-idea-or-some-critical-flaw)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
 ## Design Goals

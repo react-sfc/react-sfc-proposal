@@ -48,31 +48,21 @@ Reference implementation:
 Here is how we might write a React Single File Component:
 
 ```js
+let $count = 1
+
 export const STYLE = `
-    div {
-      /* scoped by default */
-      background-color: papayawhip;
-      .Button {
-        border-color: cadetblue;
-      }
+    div { /* scoped by default */
+      background-color: ${$count > 4 ? "papayawhip" : "palegoldenrod"};
     }
   `
 
-export default ({onClick}) => {
-  useEffect(() => console.log('rerendered')) // no need for React import
+export default () => {
+  useEffect(() => console.log('rerendered'))
   return (
-  <div>
-    Some Text
-    <MyButton {...{onClick}}>
-      My Call To Action
-    </MyButton>
-  </div>
+    <button onClick={() => $count++}> 
+      Counter {$count}
+    </button>
   )
-}
-
-// I can define inline Components like normal
-function MyButton({onClick}) {
-  return <button className="Button" {...{onClick}}>{children}</button>
 }
 ```
 

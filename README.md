@@ -38,6 +38,8 @@ Reference implementation:
 - Have easy upgrade paths to go from a basic component to dynamic styles, or add state, or extract graphql dependencies
 - Reduce verbosity without sacrificing readability
 
+This probably means that a successful React SFC should be a superset of normal React: you should be able to rename any `.js` and `.jsx` file and it should "just work", before taking advantage of any new features.
+
 ## In 1 image
 
 ![image](https://user-images.githubusercontent.com/6764957/89126435-3c8c9900-d518-11ea-93b2-9f2f7df14db5.png)
@@ -79,14 +81,21 @@ We can switch nicely from no-runtime scoped styles to CSS-in-JS:
 ```js
 export const STYLE = props => `
     div {
-      // scoped by default
       background-color: ${props.bgColor || 'papayawhip'};
     }
   `
 // etc
 ```
 
-_Note: there are smaller details to sweat here with regards to passing down className, but we're staying high level for now_
+In future we might offer a no-op `css` function that would make it easier for editor tooling to do CSS in JS syntax highlighting:
+
+```js
+export const STYLE = css`
+    div { /* properly syntax highlighted */
+      background-color: blue;
+    }
+`
+```
 
 ### State
 

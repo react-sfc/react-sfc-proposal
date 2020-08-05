@@ -74,7 +74,7 @@ The component name would be taken from the filename. Named exports would also be
 
 These require more work done by the surrounding compiler/distribution, and offer a lot of room for innovation:
 
-### Optional CSS in JS
+### CSS in JS
 
 We can switch nicely from no-runtime scoped styles to CSS-in-JS:
 
@@ -183,6 +183,39 @@ export default () => {
 }
 ```
 
+### Binding
+
+Local two way binding can be really nice.
+
+
+```js
+let $text = 0
+
+export default () => {
+  return <input $value={$text} />
+}
+```
+
+And this transpiles to the appropriate `onChange` handler and `value` attribute. It would also have to handle object access.
+
+Another feature from Vue and Svelte that is handy is class binding. JSX only offers className as a string. We could do better:
+
+
+```js
+let $foo = 0
+let $bar = 0
+
+export default () => {
+  return <form>
+    <span $class={{
+      class1: $foo,
+      class2: $bar,
+    }}>Test<span>
+    <button onClick={() => $foo++}> Click {$foo}</button>
+    <button onClick={() => $bar++}> Click {$bar}</button>
+  </form>
+}
+```
 
 ### GraphQL
 

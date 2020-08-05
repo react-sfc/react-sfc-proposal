@@ -1,8 +1,8 @@
 # React Single File Components
 
-Some thoughts on bringing Single File Components to React.
+An experiment in bringing Single File Components to React.
 
-Reference implementation:
+Reference implementations:
 
 - Rollup: https://github.com/sw-yx/rollup-plugin-react-sfc
 - Webpack: (tbd but i am squatting on `react-sfc-loader` - lmk if you want to work on this)

@@ -1,13 +1,13 @@
 # React Single File Components
 
-Collecting community proposals for bringing Single File Components to React.
+Community proposals for bringing Single File Components to React.
 
 Example implementations:
 
 - swyx: https://github.com/react-sfc/react-sfc-swyx
 - https://github.com/digitalie/one-loader ([HN comments](https://news.ycombinator.com/item?id=15408140))
-- https://github.com/windyGex/react-template-loader (very old, uses `<template>` for some reason)
-- https://github.com/LukasBombach/single-file-components
+- https://github.com/windyGex/react-template-loader (4y old, inactive)
+- https://github.com/LukasBombach/single-file-components Vue => React files
 - yours?
 
 ## Table of Contents
@@ -51,19 +51,19 @@ This probably means that a successful React SFC should be a superset of normal R
 Here is how we might write a React Single File Component:
 
 ```js
-let $count = 1
+let _count = 1
 
 export const STYLE = `
     div { /* scoped by default */
-      background-color: ${$count > 4 ? "papayawhip" : "palegoldenrod"};
+      background-color: ${_count > 4 ? "papayawhip" : "palegoldenrod"};
     }
   `
 
 export default () => {
   useEffect(() => console.log('rerendered'))
   return (
-    <button onClick={() => $count++}> 
-      Counter {$count}
+    <button onClick={() => _count++}> 
+      Counter {_count}
     </button>
   )
 }

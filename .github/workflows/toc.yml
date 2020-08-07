@@ -1,7 +1,0 @@
-on: push
-name: TOC Generator
-jobs:
-  generateTOC:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: technote-space/toc-generator@v2

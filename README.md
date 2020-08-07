@@ -1,14 +1,14 @@
 # React Single File Components
 
-An experiment in bringing Single File Components to React.
+Collecting community proposals for bringing Single File Components to React.
 
-Reference implementations:
+Example implementations:
 
-- Rollup: https://github.com/sw-yx/rollup-plugin-react-sfc
-- Webpack: (tbd but i am squatting on `react-sfc-loader` - lmk if you want to work on this)
-- Parcel: (tbd)
-- Vite: (tbd)
-- Sandpack?
+- swyx: https://github.com/react-sfc/react-sfc-swyx
+- https://github.com/digitalie/one-loader ([HN comments](https://news.ycombinator.com/item?id=15408140))
+- https://github.com/windyGex/react-template-loader (very old, uses `<template>` for some reason)
+- https://github.com/LukasBombach/single-file-components
+- yours?
 
 ## Table of Contents
 
@@ -103,17 +103,17 @@ export const STYLE = css`
 We can declare mutable state:
 
 ```js
-let count = 0
+let _count = 0
 
 export const STYLE = `
     button {
       // scoped by default
-      background-color: ${count > 5 ? 'red' : 'papayawhip'};
+      background-color: ${_count > 5 ? 'red' : 'papayawhip'};
     }
   `
 
 export default () => {
-  return <button onClick={() => count++}>Click {count}</button>
+  return <button onClick={() => _count++}>Click {_count}</button>
 }
 ```
 
@@ -125,15 +125,15 @@ and this is transformed to the appropriate React APIs.
 
 ```js
 export default const FILENAME = () => {
-  const [count, setCount] = useState(0);
+  const [_count, set_Count] = useState(0);
   return (
     <>
-      <button onClick={() => setCount(count++)}>Click {count}</button>
+      <button onClick={() => set_Count(_count++)}>Click {_count}</button>
       <style jsx>
         {`
           button {
             // scoped by default
-            background-color: ${count > 5 ? "red" : "papayawhip"};
+            background-color: ${_count > 5 ? "red" : "papayawhip"};
           }
         `}
       </style>
@@ -203,17 +203,17 @@ Another feature from Vue and Svelte that is handy is class binding. JSX only off
 
 
 ```js
-let $foo = 0
-let $bar = 0
+let _foo = 0
+let _bar = 0
 
 export default () => {
   return <form>
-    <span $class={{
-      class1: $foo,
-      class2: $bar,
+    <span bind:class={{
+      class1: _foo,
+      class2: _bar,
     }}>Test<span>
-    <button onClick={() => $foo++}> Click {$foo}</button>
-    <button onClick={() => $bar++}> Click {$bar}</button>
+    <button onClick={() => _foo++}> Click {_foo}</button>
+    <button onClick={() => _bar++}> Click {_bar}</button>
   </form>
 }
 ```
@@ -311,9 +311,6 @@ However, to the extent that the React SFC loader is a single entry point to webp
   - vue compiler utils [parse](https://github.com/vuejs/component-compiler-utils/blob/master/lib/parse.ts)
   - [vue html parsing](https://github.com/vuejs/vue/blob/dev/src/compiler/parser/html-parser.js)
   - [.vue files for React](https://github.com/LukasBombach/single-file-components) by Lukas Bombach
-- https://github.com/digitalie/one-loader ([HN comments](https://news.ycombinator.com/item?id=15408140))
-- https://github.com/windyGex/react-template-loader (very old, uses `<template>` for some reason)
-- https://github.com/LukasBombach/single-file-components
 - reddit discusssions:
   - https://www.reddit.com/r/reactjs/comments/6kzqm0/is_there_a_react_equivalent_to_vues_single_file/
   - https://www.reddit.com/r/reactjs/comments/9495ft/single_file_components_no_one_misses_it/
